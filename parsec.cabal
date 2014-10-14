@@ -5,7 +5,7 @@ license:	BSD3
 license-file:	LICENSE
 author:		Daan Leijen <daan@microsoft.com>, Paolo Martini <paolo@nemail.it>
 maintainer:	Antoine Latter <aslatter@gmail.com>
-homepage:	http://www.cs.uu.nl/~daan/parsec.html
+homepage:	https://web.archive.org/web/20140528151730/http://legacy.cs.uu.nl/daan/parsec.html
 bug-reports:    https://github.com/aslatter/parsec/issues
 category:	Parsing
 synopsis:	Monadic parser combinators
