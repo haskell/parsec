@@ -14,7 +14,7 @@
 
 module Text.Parsec.Combinator
     ( choice
-    , count
+    , count, countUpTo, countFromTo
     , between
     , option, optionMaybe, optional
     , skipMany1
@@ -164,6 +164,22 @@ endBy p sep         = many (do{ x <- p; sep; return x })
 count :: (Stream s m t) => Int -> ParsecT s u m a -> ParsecT s u m [a]
 count n p           | n <= 0    = return []
                     | otherwise = sequence (replicate n p)
+
+-- | @countUpto n p@ parses zero to @n@ occurrences of @p@. If @n@ is smaller or
+-- equal to zero, the parser equals to @return []@. Returns a list of up to
+-- @n@ values returned by @p@.
+countUpTo :: Stream s m t => Int -> ParsecT s u m a -> ParsecT s u m [a]
+countUpTo n p
+    | n <= 0 = return []
+    | otherwise = option [] (liftM2 (:) p (countUpTo (pred n) p))
+
+-- | @countUpto m n p@ parses @m@ to @n@ occurrences of @p@. If @n@ is smaller or
+-- equal to zero, the parser equals to @return []@. Returns a list of @m@ to
+-- @n@ values returned by @p@.
+countFromTo :: Stream s m t => Int -> Int -> ParsecT s u m a -> ParsecT s u m [a]
+countFromTo l r p
+    | r < l = return []
+    | otherwise = liftM2 (++) (count l p) (countUpTo (r - l) p)
 
 -- | @chainr p op x@ parses /zero/ or more occurrences of @p@,
 -- separated by @op@ Returns a value obtained by a /right/ associative
