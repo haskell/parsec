@@ -24,7 +24,7 @@ module Text.Parsec.Token
     , makeTokenParser
     ) where
 
-import Data.Char ( isAlpha, toLower, toUpper, isSpace, digitToInt )
+import Data.Char ( isAlpha, toLower, toUpper, digitToInt )
 import Data.List ( nub, sort )
 import Control.Monad.Identity
 import Text.Parsec.Prim
@@ -95,8 +95,11 @@ data GenLanguageDef s u m
 
     -- | Set to 'True' if the language is case sensitive. 
 
-    caseSensitive  :: Bool
+    caseSensitive  :: Bool,
 
+    -- | Is whitespace character?
+
+    spaceChar     :: ParsecT s u m Char
     }
 
 -----------------------------------------------------------
@@ -687,7 +690,7 @@ makeTokenParser languageDef
 
 
     simpleSpace =
-        skipMany1 (satisfy isSpace)
+        skipMany1 (spaceChar languageDef)
 
     oneLineComment =
         do{ try (string (commentLine languageDef))

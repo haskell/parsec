@@ -25,6 +25,7 @@ module Text.Parsec.Language
 
 import Text.Parsec
 import Text.Parsec.Token
+import Data.Char (isSpace)
 
 -----------------------------------------------------------
 -- Styles: haskellStyle, javaStyle
@@ -88,6 +89,7 @@ emptyDef    = LanguageDef
                , reservedOpNames= []
                , reservedNames  = []
                , caseSensitive  = True
+               , spaceChar      = satisfy isSpace
                }
 
 
