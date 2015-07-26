@@ -8,7 +8,7 @@
 -- Stability   :  provisional
 -- Portability :  portable
 -- 
--- Convinience definitions for working with lazy 'Text.Text'.
+-- Convenience definitions for working with lazy 'Text.Text'.
 --
 -----------------------------------------------------------------------------
 
