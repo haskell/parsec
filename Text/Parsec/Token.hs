@@ -461,7 +461,9 @@ makeTokenParser languageDef
     charNum         = do{ code <- decimal
                                   <|> do{ char 'o'; number 8 octDigit }
                                   <|> do{ char 'x'; number 16 hexDigit }
-                        ; return (toEnum (fromInteger code))
+                        ; if code > 0x10FFFF
+                          then fail "invalid escape sequence"
+                          else return (toEnum (fromInteger code))
                         }
 
     charEsc         = choice (map parseEsc escMap)
