@@ -25,6 +25,7 @@ module Text.Parsec.Token
     ) where
 
 import Data.Char ( isAlpha, toLower, toUpper, isSpace, digitToInt )
+import Data.Typeable ( Typeable )
 import Data.List ( nub, sort )
 import Control.Monad.Identity
 import Text.Parsec.Prim
@@ -98,6 +99,7 @@ data GenLanguageDef s u m
     caseSensitive  :: Bool
 
     }
+    deriving ( Typeable )
 
 -----------------------------------------------------------
 -- A first class module: TokenParser
@@ -305,6 +307,7 @@ data GenTokenParser s u m
 
         commaSep1        :: forall a . ParsecT s u m a -> ParsecT s u m [a]
     }
+    deriving ( Typeable )
 
 -----------------------------------------------------------
 -- Given a LanguageDef, create a token parser.

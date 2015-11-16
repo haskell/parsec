@@ -32,6 +32,7 @@ module Text.Parsec.Perm
 import Text.Parsec
 
 import Control.Monad.Identity
+import Data.Typeable ( Typeable )
 
 infixl 1 <||>, <|?>
 infixl 2 <$$>, <$?>
@@ -119,10 +120,12 @@ type PermParser tok st a = StreamPermParser String st a
 -- using 'permute'.
 
 data StreamPermParser s st a = Perm (Maybe a) [StreamBranch s st a]
+    deriving ( Typeable )
 
 -- type Branch st a = StreamBranch String st a
 
 data StreamBranch s st a = forall b. Branch (StreamPermParser s st (b -> a)) (Parsec s st b)
+    deriving ( Typeable )
 
 -- | The parser @permute perm@ parses a permutation of parser described
 -- by @perm@. For example, suppose we want to parse a permutation of:

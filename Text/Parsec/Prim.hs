@@ -72,6 +72,8 @@ module Text.Parsec.Prim
 import qualified Data.ByteString.Lazy.Char8 as CL
 import qualified Data.ByteString.Char8 as C
 
+import Data.Typeable ( Typeable )
+
 import qualified Data.Text as Text
 import qualified Data.Text.Lazy as TextL
 
@@ -123,6 +125,7 @@ newtype ParsecT s u m a
               -> (ParseError -> m b)                   -- empty err
               -> m b
              }
+     deriving ( Typeable )
 
 -- | Low-level unpacking of the ParsecT type. To run your parser, please look to
 -- runPT, runP, runParserT, runParser and other such functions.
@@ -153,15 +156,18 @@ type Parsec s u = ParsecT s u Identity
 
 data Consumed a  = Consumed a
                  | Empty !a
+    deriving ( Typeable )
 
 data Reply s u a = Ok a !(State s u) ParseError
                  | Error ParseError
+    deriving ( Typeable )
 
 data State s u = State {
       stateInput :: s,
       statePos   :: !SourcePos,
       stateUser  :: !u
     }
+    deriving ( Typeable )
 
 instance Functor Consumed where
     fmap f (Consumed x) = Consumed (f x)
