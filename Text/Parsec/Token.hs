@@ -99,7 +99,9 @@ data GenLanguageDef s u m
     caseSensitive  :: Bool
 
     }
+#if MIN_VERSION_base(4,7,0)
     deriving ( Typeable )
+#endif
 
 -----------------------------------------------------------
 -- A first class module: TokenParser
@@ -307,7 +309,9 @@ data GenTokenParser s u m
 
         commaSep1        :: forall a . ParsecT s u m a -> ParsecT s u m [a]
     }
+#if MIN_VERSION_base(4,7,0)
     deriving ( Typeable )
+#endif
 
 -----------------------------------------------------------
 -- Given a LanguageDef, create a token parser.

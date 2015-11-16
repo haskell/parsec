@@ -13,7 +13,7 @@
 -----------------------------------------------------------------------------   
 
 {-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies, FlexibleContexts,
-             UndecidableInstances #-}
+             UndecidableInstances, StandaloneDeriving #-}
 {-# OPTIONS_HADDOCK not-home #-}
 
 module Text.Parsec.Prim
@@ -125,7 +125,11 @@ newtype ParsecT s u m a
               -> (ParseError -> m b)                   -- empty err
               -> m b
              }
+#if MIN_VERSION_base(4,7,0)
      deriving ( Typeable )
+     -- GHC 7.6 doesn't like deriving instances of Typeabl1 for types with
+     -- non-* type-arguments.
+#endif
 
 -- | Low-level unpacking of the ParsecT type. To run your parser, please look to
 -- runPT, runP, runParserT, runParser and other such functions.

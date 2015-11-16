@@ -29,7 +29,6 @@ import Control.Monad.Identity
 data Operator tok st a   = Infix  (GenParser tok st (a -> a -> a)) Assoc
                          | Prefix (GenParser tok st (a -> a))
                          | Postfix (GenParser tok st (a -> a))
-    deriving ( Typeable )
 
 type OperatorTable tok st a = [[Operator tok st a]]
 
