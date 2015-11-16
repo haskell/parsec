@@ -18,6 +18,8 @@ module Text.Parsec.Expr
     , buildExpressionParser
     ) where
 
+import Data.Typeable ( Typeable )
+
 import Text.Parsec.Prim
 import Text.Parsec.Combinator
 
@@ -31,6 +33,7 @@ import Text.Parsec.Combinator
 data Assoc                = AssocNone
                           | AssocLeft
                           | AssocRight
+   deriving ( Typeable )
 
 -- | This data type specifies operators that work on values of type @a@.
 -- An operator is either binary infix or unary prefix or postfix. A
@@ -39,6 +42,9 @@ data Assoc                = AssocNone
 data Operator s u m a   = Infix (ParsecT s u m (a -> a -> a)) Assoc
                         | Prefix (ParsecT s u m (a -> a))
                         | Postfix (ParsecT s u m (a -> a))
+#if MIN_VERSION_base(4,7,0)
+    deriving ( Typeable )
+#endif
 
 -- | An @OperatorTable s u m a@ is a list of @Operator s u m a@
 -- lists. The list is ordered in descending

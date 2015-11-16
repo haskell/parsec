@@ -23,6 +23,7 @@ import Text.Parsec.Expr(Assoc(..))
 import qualified Text.Parsec.Expr as N
 import Text.ParserCombinators.Parsec(GenParser)
 
+import Data.Typeable ( Typeable )
 import Control.Monad.Identity
 
 data Operator tok st a   = Infix  (GenParser tok st (a -> a -> a)) Assoc

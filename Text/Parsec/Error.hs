@@ -23,6 +23,7 @@ module Text.Parsec.Error
     ) where
 
 import Data.List ( nub, sort )
+import Data.Typeable ( Typeable )
 
 import Text.Parsec.Pos
 
@@ -57,6 +58,7 @@ data Message = SysUnExpect !String -- @ library generated unexpect
              | UnExpect    !String -- @ unexpected something
              | Expect      !String -- @ expecting something
              | Message     !String -- @ raw message
+    deriving ( Typeable )
 
 instance Enum Message where
     fromEnum (SysUnExpect _) = 0
@@ -94,6 +96,7 @@ messageString (Message     s) = s
 -- instance of the 'Show' and 'Eq' classes.
 
 data ParseError = ParseError !SourcePos [Message]
+    deriving ( Typeable )
 
 -- | Extracts the source position from the parse error
 
