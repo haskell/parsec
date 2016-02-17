@@ -20,6 +20,7 @@ module Text.Parsec.Combinator
     , skipMany1
     , many1
     , sepBy, sepBy1
+    , sepBy', sepBy1'
     , endBy, endBy1
     , sepEndBy, sepEndBy1
     , chainl, chainl1
@@ -117,6 +118,20 @@ sepBy1 :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m sep -> ParsecT s u 
 sepBy1 p sep        = do{ x <- p
                         ; xs <- many (sep >> p)
                         ; return (x:xs)
+                        }
+
+sepBy' :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m sep -> ParsecT s u m [a]
+sepBy' p sep        = sepBy1' p sep <|> return []
+
+sepBy1' :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m sep -> ParsecT s u m [a]
+sepBy1' p sep       = do{ x <- p
+                        ; xs <- piter []
+                        ; return $ x:reverse xs
+                        }
+    where piter acc = do{ m <- optionMaybe sep
+                        ; case m of
+                            Nothing -> return acc
+                            Just _  -> do{ x' <- p; piter $ x':acc }
                         }
 
 
