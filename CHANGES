@@ -1,3 +1,13 @@
+3.1.10
+
+- Most types now have a `Typeable` instance. Some instances are dropped from
+  older versions of GHC (sorry about that!).
+- The token-parser now rejects Unicode numeric escape sequences for characters
+  outside the Unicode range.
+- The token-parser now loses less precision when parsing literal doubles.
+- Documentation fixes and corrections.
+- We no longer test parsec builds on GHC 7.4.
+
 3.1.9
 
 - Many and various updates to documentation and package description (inlcuding
