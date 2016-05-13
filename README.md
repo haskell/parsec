@@ -1,4 +1,4 @@
-Parsec
+Parsec [![Build Status](https://travis-ci.org/aslatter/parsec.svg?branch=master)](https://travis-ci.org/aslatter/parsec)
 ======
 
 A monadic parser combinator library, written by Daan Leijen. Parsec is designed
