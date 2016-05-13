@@ -1,5 +1,5 @@
 name:		parsec
-version:	3.1.10
+version:	3.1.11
 cabal-version: >= 1.8
 license:	BSD3
 license-file:	LICENSE
@@ -17,7 +17,8 @@ description:
 	and is fast.  It is defined as a monad transformer that can be
 	stacked on arbitrary monads, and it is also parametric in the
 	input stream type.
-extra-source-files: CHANGES
+extra-source-files: CHANGES, README.md
+tested-with:    GHC==7.10.*, GHC==7.8.*, GHC==7.6.*
 
 source-repository head
     type: git
