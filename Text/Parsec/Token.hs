@@ -530,31 +530,31 @@ makeTokenParser languageDef
                         }
 
     fractExponent n = do{ fract <- fraction
-                        ; expo  <- option 1.0 exponent'
-                        ; return ((fromInteger n + fract)*expo)
+                        ; expo  <- option "" exponent'
+                        ; readDouble (show n ++ fract ++ expo)
                         }
                     <|>
                       do{ expo <- exponent'
-                        ; return ((fromInteger n)*expo)
+                        ; readDouble (show n ++ expo)
                         }
+                      where
+                        readDouble s =
+                          case reads s of
+                            [(x, "")] -> return x
+                            _         -> parserZero
 
     fraction        = do{ char '.'
                         ; digits <- many1 digit <?> "fraction"
-                        ; return (foldr op 0.0 digits)
+                        ; return ('.' : digits)
                         }
                       <?> "fraction"
-                    where
-                      op d f    = (f + fromIntegral (digitToInt d))/10.0
 
     exponent'       = do{ oneOf "eE"
-                        ; f <- sign
+                        ; sign' <- fmap (:[]) (oneOf "+-") <|> return ""
                         ; e <- decimal <?> "exponent"
-                        ; return (power (f e))
+                        ; return ('e' : sign' ++ show e)
                         }
                       <?> "exponent"
-                    where
-                       power e  | e < 0      = 1.0/power(-e)
-                                | otherwise  = fromInteger (10^e)
 
 
     -- integers and naturals
