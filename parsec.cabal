@@ -75,6 +75,7 @@ Test-Suite tests
                  Bugs.Bug2,
                  Bugs.Bug6,
                  Bugs.Bug9,
+                 Bugs.Bug35,
                  Util
     build-depends:
        base,
