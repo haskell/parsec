@@ -35,7 +35,7 @@ module Text.Parsec.Prim
     , parserZero
     , parserPlus
     , (<?>)
-    , (<|>)
+    , Applicative.Alternative(empty, (<|>))
     , label
     , labels
     , lookAhead
@@ -297,6 +297,18 @@ parserZero
     = ParsecT $ \s _ _ _ eerr ->
       eerr $ unknownError s
 
+-- | This function implements choice. The parser @parserPlus p q@ first
+-- applies @p@. If it succeeds, the value of @p@ is returned. If @p@
+-- fails /without consuming any input/, parser @q@ is tried. This
+-- combinator is defined equal to the 'mplus' member of the 'MonadPlus'
+-- class and the ('Control.Applicative.<|>') member of 'Control.Applicative.Alternative'.
+--
+-- The parser is called /predictive/ since @q@ is only tried when
+-- parser @p@ didn't consume any input (i.e.. the look ahead is 1).
+-- This non-backtracking behaviour allows for both an efficient
+-- implementation of the parser combinators and the generation of good
+-- error messages.
+
 parserPlus :: ParsecT s u m a -> ParsecT s u m a -> ParsecT s u m a
 {-# INLINE parserPlus #-}
 parserPlus m n
@@ -315,7 +327,6 @@ instance MonadTrans (ParsecT s u) where
                eok a s $ unknownError s
 
 infix  0 <?>
-infixr 1 <|>
 
 -- | The parser @p \<?> msg@ behaves as parser @p@, but whenever the
 -- parser @p@ fails /without consuming any input/, it replaces expect
@@ -331,21 +342,6 @@ infixr 1 <|>
 
 (<?>) :: (ParsecT s u m a) -> String -> (ParsecT s u m a)
 p <?> msg = label p msg
-
--- | This combinator implements choice. The parser @p \<|> q@ first
--- applies @p@. If it succeeds, the value of @p@ is returned. If @p@
--- fails /without consuming any input/, parser @q@ is tried. This
--- combinator is defined equal to the 'mplus' member of the 'MonadPlus'
--- class and the ('Control.Applicative.<|>') member of 'Control.Applicative.Alternative'.
---
--- The parser is called /predictive/ since @q@ is only tried when
--- parser @p@ didn't consume any input (i.e.. the look ahead is 1).
--- This non-backtracking behaviour allows for both an efficient
--- implementation of the parser combinators and the generation of good
--- error messages.
-
-(<|>) :: (ParsecT s u m a) -> (ParsecT s u m a) -> (ParsecT s u m a)
-p1 <|> p2 = mplus p1 p2
 
 -- | A synonym for @\<?>@, but as a function instead of an operator.
 label :: ParsecT s u m a -> String -> ParsecT s u m a
