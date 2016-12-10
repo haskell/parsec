@@ -216,7 +216,7 @@ data GenTokenParser s u m
 
         symbol           :: String -> ParsecT s u m String,
 
-        -- | @lexeme p@ first applies parser @p@ and than the 'whiteSpace'
+        -- | @lexeme p@ first applies parser @p@ and then the 'whiteSpace'
         -- parser, returning the value of @p@. Every lexical
         -- token (lexeme) is defined using @lexeme@, this way every parse
         -- starts at a point without white space. Parsers that use @lexeme@ are
