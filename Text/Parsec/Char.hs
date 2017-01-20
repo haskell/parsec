@@ -87,13 +87,13 @@ upper               = satisfy isUpper       <?> "uppercase letter"
 lower :: (Stream s m Char) => ParsecT s u m Char
 lower               = satisfy isLower       <?> "lowercase letter"
 
--- | Parses a letter or digit (a character between \'0\' and \'9\').
+-- | Parses an alphabetic unicode character or digit (a character between \'0\' and \'9\').
 -- Returns the parsed character.
 
 alphaNum :: (Stream s m Char => ParsecT s u m Char)
 alphaNum            = satisfy isAlphaNum    <?> "letter or digit"
 
--- | Parses a letter (an upper case or lower case character). Returns the
+-- | Parses an alphabetic unicode character (an upper case or lower case character). Returns the
 -- parsed character.
 
 letter :: (Stream s m Char) => ParsecT s u m Char
