@@ -1,4 +1,4 @@
-Parsec [![Build Status](https://travis-ci.org/aslatter/parsec.svg?branch=master)](https://travis-ci.org/aslatter/parsec)
+Parsec [![Build Status](https://travis-ci.org/haskell/parsec.svg?branch=master)](https://travis-ci.org/haskell/parsec)
 ======
 
 A monadic parser combinator library, written by Daan Leijen. Parsec is designed
@@ -84,12 +84,12 @@ the top of this README file.
 ## Contributing
 
 Issues (bugs, feature requests or otherwise feedback) may be reported in
-[the Github issue tracker for this project](https://github.com/aslatter/parsec/issues).
+[the Github issue tracker for this project](https://github.com/haskell/parsec/issues).
 
 Pull-requests are also welcome.
 
 
 ## License
 
-See the [LICENSE](https://github.com/aslatter/parsec/blob/master/LICENSE)
+See the [LICENSE](https://github.com/haskell/parsec/blob/master/LICENSE)
 file in the repository.
