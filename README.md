@@ -29,6 +29,11 @@ Some links:
   answers on separate StackExchange questions
   ([1](http://stackoverflow.com/a/7270904),
   [2](http://stackoverflow.com/a/14775331)).
+* Differences between Parsec and
+  [Megaparsec](http://hackage.haskell.org/package/megaparsec)
+  (an advanced fork of Parsec) as explained in
+  [Megaparsec's README](https://github.com/mrkkrp/megaparsec#megaparsec-vs-parsec).
+
 
 By analyzing [Parsec's reverse dependencies on Hackage](http://packdeps.haskellers.com/reverse/parsec)
 we can find open source project that make use of Parsec.  For example
