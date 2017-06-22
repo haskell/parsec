@@ -18,7 +18,7 @@ description:
 	stacked on arbitrary monads, and it is also parametric in the
 	input stream type.
 extra-source-files: CHANGES, README.md
-tested-with:    GHC==7.10.*, GHC==7.8.*, GHC==7.6.*
+tested-with: GHC==8.2.1, GHC==8.0.2, GHC==7.10.3, GHC==7.8.4, GHC==7.6.3, GHC==7.4.2, GHC==7.2.2, GHC==7.0.4
 
 source-repository head
     type: git
