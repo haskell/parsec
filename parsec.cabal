@@ -1,5 +1,5 @@
 name:		parsec
-version:	3.1.11
+version:	3.1.12
 cabal-version: >= 1.8
 license:	BSD3
 license-file:	LICENSE
@@ -66,6 +66,13 @@ library
        FlexibleContexts,
        DeriveDataTypeable,
        CPP
+
+    if impl(ghc >= 8.0)
+       ghc-options: -Wcompat -Wnoncanonical-monad-instances -Wnoncanonical-monadfail-instances
+    else
+       -- provide/emulate `Control.Monad.Fail` API for pre-GHC8
+       build-depends: fail == 4.9.*
+
 
 Test-Suite tests
     type:        exitcode-stdio-1.0

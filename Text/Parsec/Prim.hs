@@ -81,6 +81,7 @@ import qualified Control.Applicative as Applicative ( Applicative(..), Alternati
 import Control.Monad()
 import Control.Monad.Trans
 import Control.Monad.Identity
+import qualified Control.Monad.Fail as Fail
 
 import Control.Monad.Reader.Class
 import Control.Monad.State.Class
@@ -190,7 +191,7 @@ parsecMap f p
       unParser p s (cok . f) cerr (eok . f) eerr
 
 instance Applicative.Applicative (ParsecT s u m) where
-    pure = return
+    pure = parserReturn
     (<*>) = ap -- TODO: Can this be optimized?
 
 instance Applicative.Alternative (ParsecT s u m) where
@@ -198,9 +199,12 @@ instance Applicative.Alternative (ParsecT s u m) where
     (<|>) = mplus
 
 instance Monad (ParsecT s u m) where
-    return x = parserReturn x
-    p >>= f  = parserBind p f
-    fail msg = parserFail msg
+    return = Applicative.pure
+    p >>= f = parserBind p f
+    fail = Fail.fail
+
+instance Fail.MonadFail (ParsecT s u m) where
+    fail = parserFail
 
 instance (MonadIO m) => MonadIO (ParsecT s u m) where
     liftIO = lift . liftIO

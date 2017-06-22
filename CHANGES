@@ -1,3 +1,7 @@
+3.1.12
+
+- Add `MonadFail` instance for `ParsecT`
+
 3.1.11
 
 - Include `README.md` in package.
