@@ -1,3 +1,14 @@
+{-# LANGUAGE CPP #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE ExistentialQuantification #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE PolymorphicComponents #-}
+{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE UndecidableInstances #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Text.Parsec.Prim
@@ -12,8 +23,6 @@
 -- 
 -----------------------------------------------------------------------------   
 
-{-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies, FlexibleContexts,
-             UndecidableInstances, StandaloneDeriving #-}
 {-# OPTIONS_HADDOCK not-home #-}
 
 module Text.Parsec.Prim

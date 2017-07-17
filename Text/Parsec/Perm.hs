@@ -1,3 +1,9 @@
+{-# LANGUAGE CPP #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE ExistentialQuantification #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE StandaloneDeriving #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Text.Parsec.Perm
@@ -18,7 +24,6 @@
 -- 
 -----------------------------------------------------------------------------
 
-{-# LANGUAGE ExistentialQuantification, StandaloneDeriving #-}
 
 module Text.Parsec.Perm
     ( PermParser

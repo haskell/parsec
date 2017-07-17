@@ -1,3 +1,8 @@
+{-# LANGUAGE CPP #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE PolymorphicComponents #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Text.Parsec.Token
@@ -13,7 +18,6 @@
 -- 
 -----------------------------------------------------------------------------
 
-{-# LANGUAGE PolymorphicComponents #-}
 {-# OPTIONS_GHC -fno-warn-name-shadowing #-}
 
 module Text.Parsec.Token

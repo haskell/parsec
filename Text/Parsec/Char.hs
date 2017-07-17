@@ -1,3 +1,5 @@
+{-# LANGUAGE FlexibleContexts #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Text.Parsec.Char
@@ -11,8 +13,6 @@
 -- Commonly used character parsers.
 -- 
 -----------------------------------------------------------------------------
-
-{-# LANGUAGE FlexibleContexts #-}
 
 module Text.Parsec.Char where
 
