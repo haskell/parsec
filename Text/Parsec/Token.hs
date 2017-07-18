@@ -29,7 +29,9 @@ module Text.Parsec.Token
     ) where
 
 import Data.Char ( isAlpha, toLower, toUpper, isSpace, digitToInt )
+#if MIN_VERSION_base(4,7,0)
 import Data.Typeable ( Typeable )
+#endif
 import Data.List ( nub, sort )
 import Control.Monad.Identity
 import Text.Parsec.Prim
@@ -421,7 +423,7 @@ makeTokenParser languageDef
     characterChar   = charLetter <|> charEscape
                     <?> "literal character"
 
-    charEscape      = do{ char '\\'; escapeCode }
+    charEscape      = do{ _ <- char '\\'; escapeCode }
     charLetter      = satisfy (\c -> (c /= '\'') && (c /= '\\') && (c > '\026'))
 
 
@@ -440,14 +442,14 @@ makeTokenParser languageDef
 
     stringLetter    = satisfy (\c -> (c /= '"') && (c /= '\\') && (c > '\026'))
 
-    stringEscape    = do{ char '\\'
-                        ;     do{ escapeGap  ; return Nothing }
-                          <|> do{ escapeEmpty; return Nothing }
+    stringEscape    = do{ _ <- char '\\'
+                        ;     do{ _ <- escapeGap  ; return Nothing }
+                          <|> do{ _ <- escapeEmpty; return Nothing }
                           <|> do{ esc <- escapeCode; return (Just esc) }
                         }
 
     escapeEmpty     = char '&'
-    escapeGap       = do{ many1 space
+    escapeGap       = do{ _ <- many1 space
                         ; char '\\' <?> "end of string gap"
                         }
 
@@ -457,14 +459,14 @@ makeTokenParser languageDef
     escapeCode      = charEsc <|> charNum <|> charAscii <|> charControl
                     <?> "escape code"
 
-    charControl     = do{ char '^'
+    charControl     = do{ _ <- char '^'
                         ; code <- upper
                         ; return (toEnum (fromEnum code - fromEnum 'A' + 1))
                         }
 
     charNum         = do{ code <- decimal
-                                  <|> do{ char 'o'; number 8 octDigit }
-                                  <|> do{ char 'x'; number 16 hexDigit }
+                                  <|> do{ _ <- char 'o'; number 8 octDigit }
+                                  <|> do{ _ <- char 'x'; number 16 hexDigit }
                         ; if code > 0x10FFFF
                           then fail "invalid escape sequence"
                           else return (toEnum (fromInteger code))
@@ -472,11 +474,11 @@ makeTokenParser languageDef
 
     charEsc         = choice (map parseEsc escMap)
                     where
-                      parseEsc (c,code)     = do{ char c; return code }
+                      parseEsc (c,code)     = do{ _ <- char c; return code }
 
     charAscii       = choice (map parseAscii asciiMap)
                     where
-                      parseAscii (asc,code) = try (do{ string asc; return code })
+                      parseAscii (asc,code) = try (do{ _ <- string asc; return code })
 
 
     -- escape code tables
@@ -512,7 +514,7 @@ makeTokenParser languageDef
                         }
 
 
-    natFloat        = do{ char '0'
+    natFloat        = do{ _ <- char '0'
                         ; zeroNumFloat
                         }
                       <|> decimalFloat
@@ -521,7 +523,7 @@ makeTokenParser languageDef
                          ; return (Left n)
                          }
                     <|> decimalFloat
-                    <|> fractFloat 0
+                    <|> fractFloat (0 :: Integer)
                     <|> return (Left 0)
 
     decimalFloat    = do{ n <- decimal
@@ -547,13 +549,13 @@ makeTokenParser languageDef
                             [(x, "")] -> return x
                             _         -> parserZero
 
-    fraction        = do{ char '.'
+    fraction        = do{ _ <- char '.'
                         ; digits <- many1 digit <?> "fraction"
                         ; return ('.' : digits)
                         }
                       <?> "fraction"
 
-    exponent'       = do{ oneOf "eE"
+    exponent'       = do{ _ <- oneOf "eE"
                         ; sign' <- fmap (:[]) (oneOf "+-") <|> return ""
                         ; e <- decimal <?> "exponent"
                         ; return ('e' : sign' ++ show e)
@@ -573,14 +575,14 @@ makeTokenParser languageDef
 
     nat             = zeroNumber <|> decimal
 
-    zeroNumber      = do{ char '0'
+    zeroNumber      = do{ _ <- char '0'
                         ; hexadecimal <|> octal <|> decimal <|> return 0
                         }
                       <?> ""
 
     decimal         = number 10 digit
-    hexadecimal     = do{ oneOf "xX"; number 16 hexDigit }
-    octal           = do{ oneOf "oO"; number 8 octDigit  }
+    hexadecimal     = do{ _ <- oneOf "xX"; number 16 hexDigit }
+    octal           = do{ _ <- oneOf "oO"; number 8 octDigit  }
 
     number base baseDigit
         = do{ digits <- many1 baseDigit
@@ -593,7 +595,7 @@ makeTokenParser languageDef
     -----------------------------------------------------------
     reservedOp name =
         lexeme $ try $
-        do{ string name
+        do{ _ <- string name
           ; notFollowedBy (opLetter languageDef) <?> ("end of " ++ show name)
           }
 
@@ -621,7 +623,7 @@ makeTokenParser languageDef
     -----------------------------------------------------------
     reserved name =
         lexeme $ try $
-        do{ caseString name
+        do{ _ <- caseString name
           ; notFollowedBy (identLetter languageDef) <?> ("end of " ++ show name)
           }
 
@@ -630,7 +632,7 @@ makeTokenParser languageDef
         | otherwise               = do{ walk name; return name }
         where
           walk []     = return ()
-          walk (c:cs) = do{ caseChar c <?> msg; walk cs }
+          walk (c:cs) = do{ _ <- caseChar c <?> msg; walk cs }
 
           caseChar c  | isAlpha c  = char (toLower c) <|> char (toUpper c)
                       | otherwise  = char c
@@ -703,13 +705,13 @@ makeTokenParser languageDef
         skipMany1 (satisfy isSpace)
 
     oneLineComment =
-        do{ try (string (commentLine languageDef))
+        do{ _ <- try (string (commentLine languageDef))
           ; skipMany (satisfy (/= '\n'))
           ; return ()
           }
 
     multiLineComment =
-        do { try (string (commentStart languageDef))
+        do { _ <- try (string (commentStart languageDef))
            ; inComment
            }
 
@@ -718,18 +720,18 @@ makeTokenParser languageDef
         | otherwise                = inCommentSingle
 
     inCommentMulti
-        =   do{ try (string (commentEnd languageDef)) ; return () }
+        =   do{ _ <- try (string (commentEnd languageDef)) ; return () }
         <|> do{ multiLineComment                     ; inCommentMulti }
         <|> do{ skipMany1 (noneOf startEnd)          ; inCommentMulti }
-        <|> do{ oneOf startEnd                       ; inCommentMulti }
+        <|> do{ _ <- oneOf startEnd                  ; inCommentMulti }
         <?> "end of comment"
         where
           startEnd   = nub (commentEnd languageDef ++ commentStart languageDef)
 
     inCommentSingle
-        =   do{ try (string (commentEnd languageDef)); return () }
+        =   do{ _ <- try (string (commentEnd languageDef)); return () }
         <|> do{ skipMany1 (noneOf startEnd)         ; inCommentSingle }
-        <|> do{ oneOf startEnd                      ; inCommentSingle }
+        <|> do{ _ <- oneOf startEnd                 ; inCommentSingle }
         <?> "end of comment"
         where
           startEnd   = nub (commentEnd languageDef ++ commentStart languageDef)

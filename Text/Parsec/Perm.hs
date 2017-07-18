@@ -37,8 +37,9 @@ module Text.Parsec.Perm
 import Text.Parsec
 
 import Control.Monad.Identity
+#if MIN_VERSION_base(4,7,0)
 import Data.Typeable ( Typeable )
-#if !(MIN_VERSION_base(4,7,0))
+#else
 -- For GHC 7.6
 import Data.Typeable ( Typeable3 )
 #endif

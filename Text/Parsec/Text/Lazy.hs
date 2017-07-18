@@ -17,7 +17,6 @@ module Text.Parsec.Text.Lazy
     ) where
 
 import qualified Data.Text.Lazy as Text
-import Text.Parsec.Error
 import Text.Parsec.Prim
 
 type Parser = Parsec Text.Text ()

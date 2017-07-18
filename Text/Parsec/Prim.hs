@@ -9,6 +9,8 @@
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE UndecidableInstances #-}
 
+{-# OPTIONS_GHC -fno-warn-name-shadowing #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Text.Parsec.Prim
@@ -426,7 +428,7 @@ tokens _ _ []
     = ParsecT $ \s _ _ eok _ ->
       eok [] s $ unknownError s
 tokens showTokens nextposs tts@(tok:toks)
-    = ParsecT $ \(State input pos u) cok cerr eok eerr -> 
+    = ParsecT $ \(State input pos u) cok cerr _eok eerr -> 
     let
         errEof = (setErrorMessage (Expect (showTokens tts))
                   (newErrorMessage (SysUnExpect "") pos))
@@ -561,7 +563,7 @@ tokenPrimEx :: (Stream s m t)
             -> ParsecT s u m a
 {-# INLINE tokenPrimEx #-}
 tokenPrimEx showToken nextpos Nothing test
-  = ParsecT $ \(State input pos user) cok cerr eok eerr -> do
+  = ParsecT $ \(State input pos user) cok _cerr _eok eerr -> do
       r <- uncons input
       case r of
         Nothing -> eerr $ unexpectError "" pos
@@ -573,7 +575,7 @@ tokenPrimEx showToken nextpos Nothing test
                            cok x newstate (newErrorUnknown newpos)
               Nothing -> eerr $ unexpectError (showToken c) pos
 tokenPrimEx showToken nextpos (Just nextState) test
-  = ParsecT $ \(State input pos user) cok cerr eok eerr -> do
+  = ParsecT $ \(State input pos user) cok _cerr _eok eerr -> do
       r <- uncons input
       case r of
         Nothing -> eerr $ unexpectError "" pos
@@ -586,6 +588,7 @@ tokenPrimEx showToken nextpos (Just nextState) test
                            cok x newstate $ newErrorUnknown newpos
               Nothing -> eerr $ unexpectError (showToken c) pos
 
+unexpectError :: String -> SourcePos -> ParseError
 unexpectError msg pos = newErrorMessage (SysUnExpect msg) pos
 
 
@@ -609,15 +612,15 @@ many p
 
 skipMany :: ParsecT s u m a -> ParsecT s u m ()
 skipMany p
-  = do manyAccum (\_ _ -> []) p
+  = do _ <- manyAccum (\_ _ -> []) p
        return ()
 
 manyAccum :: (a -> [a] -> [a])
           -> ParsecT s u m a
           -> ParsecT s u m [a]
 manyAccum acc p =
-    ParsecT $ \s cok cerr eok eerr ->
-    let walk xs x s' err =
+    ParsecT $ \s cok cerr eok _eerr ->
+    let walk xs x s' _err =
             unParser p s'
               (seq xs $ walk $ acc x xs)  -- consumed-ok
               cerr                        -- consumed-err
@@ -625,6 +628,7 @@ manyAccum acc p =
               (\e -> cok (acc x xs) s' e) -- empty-err
     in unParser p s (walk []) cerr manyErr (\e -> eok [] s e)
 
+manyErr :: a
 manyErr = error "Text.ParserCombinators.Parsec.Prim.many: combinator 'many' is applied to a parser that accepts an empty string."
 
 
@@ -720,7 +724,7 @@ getInput = do state <- getParserState
 
 setPosition :: (Monad m) => SourcePos -> ParsecT s u m ()
 setPosition pos
-    = do updateParserState (\(State input _ user) -> State input pos user)
+    = do _ <- updateParserState (\(State input _ user) -> State input pos user)
          return ()
 
 -- | @setInput input@ continues parsing with @input@. The 'getInput' and
@@ -729,7 +733,7 @@ setPosition pos
 
 setInput :: (Monad m) => s -> ParsecT s u m ()
 setInput input
-    = do updateParserState (\(State _ pos user) -> State input pos user)
+    = do _ <- updateParserState (\(State _ pos user) -> State input pos user)
          return ()
 
 -- | Returns the full parser state as a 'State' record.
@@ -760,7 +764,7 @@ getState = stateUser `liftM` getParserState
 -- | @putState st@ set the user state to @st@. 
 
 putState :: (Monad m) => u -> ParsecT s u m ()
-putState u = do updateParserState $ \s -> s { stateUser = u }
+putState u = do _ <- updateParserState $ \s -> s { stateUser = u }
                 return ()
 
 -- | @modifyState f@ applies function @f@ to the user state. Suppose
@@ -773,7 +777,7 @@ putState u = do updateParserState $ \s -> s { stateUser = u }
 -- >            }
 
 modifyState :: (Monad m) => (u -> u) -> ParsecT s u m ()
-modifyState f = do updateParserState $ \s -> s { stateUser = f (stateUser s) }
+modifyState f = do _ <- updateParserState $ \s -> s { stateUser = f (stateUser s) }
                    return ()
 
 -- XXX Compat

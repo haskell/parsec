@@ -198,7 +198,7 @@ showErrorMessages msgOr msgUnknown msgExpecting msgUnExpected msgEndOfInput msgs
       showMessages      = showMany "" messages
 
       -- helpers
-      showMany pre msgs = case clean (map messageString msgs) of
+      showMany pre msgs3 = case clean (map messageString msgs3) of
                             [] -> ""
                             ms | null pre  -> commasOr ms
                                | otherwise -> pre ++ " " ++ commasOr ms

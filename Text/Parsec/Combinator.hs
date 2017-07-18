@@ -62,7 +62,7 @@ optionMaybe p       = option Nothing (liftM Just p)
 -- of @p@.
 
 optional :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m ()
-optional p          = do{ p; return ()} <|> return ()
+optional p          = do{ _ <- p; return ()} <|> return ()
 
 -- | @between open close p@ parses @open@, followed by @p@ and @close@.
 -- Returns the value returned by @p@.
@@ -72,13 +72,13 @@ optional p          = do{ p; return ()} <|> return ()
 between :: (Stream s m t) => ParsecT s u m open -> ParsecT s u m close
             -> ParsecT s u m a -> ParsecT s u m a
 between open close p
-                    = do{ open; x <- p; close; return x }
+                    = do{ _ <- open; x <- p; _ <- close; return x }
 
 -- | @skipMany1 p@ applies the parser @p@ /one/ or more times, skipping
 -- its result. 
 
 skipMany1 :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m ()
-skipMany1 p         = do{ p; skipMany p }
+skipMany1 p         = do{ _ <- p; skipMany p }
 {-
 skipMany p          = scan
                     where
@@ -126,7 +126,7 @@ sepBy1 p sep        = do{ x <- p
 
 sepEndBy1 :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m sep -> ParsecT s u m [a]
 sepEndBy1 p sep     = do{ x <- p
-                        ; do{ sep
+                        ; do{ _ <- sep
                             ; xs <- sepEndBy p sep
                             ; return (x:xs)
                             }
@@ -147,7 +147,7 @@ sepEndBy p sep      = sepEndBy1 p sep <|> return []
 -- and ended by @sep@. Returns a list of values returned by @p@. 
 
 endBy1 :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m sep -> ParsecT s u m [a]
-endBy1 p sep        = many1 (do{ x <- p; sep; return x })
+endBy1 p sep        = many1 (do{ x <- p; _ <- sep; return x })
 
 -- | @endBy p sep@ parses /zero/ or more occurrences of @p@, separated
 -- and ended by @sep@. Returns a list of values returned by @p@.
@@ -155,7 +155,7 @@ endBy1 p sep        = many1 (do{ x <- p; sep; return x })
 -- >   cStatements  = cStatement `endBy` semi
 
 endBy :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m sep -> ParsecT s u m [a]
-endBy p sep         = many (do{ x <- p; sep; return x })
+endBy p sep         = many (do{ x <- p; _ <- sep; return x })
 
 -- | @count n p@ parses @n@ occurrences of @p@. If @n@ is smaller or
 -- equal to zero, the parser equals to @return []@. Returns a list of
@@ -272,6 +272,6 @@ notFollowedBy p     = try (do{ c <- try p; unexpected (show c) }
 manyTill :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m end -> ParsecT s u m [a]
 manyTill p end      = scan
                     where
-                      scan  = do{ end; return [] }
+                      scan  = do{ _ <- end; return [] }
                             <|>
                               do{ x <- p; xs <- scan; return (x:xs) }

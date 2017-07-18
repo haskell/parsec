@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE CPP, FlexibleContexts #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -19,7 +19,9 @@ module Text.Parsec.Char where
 import Data.Char
 import Text.Parsec.Pos
 import Text.Parsec.Prim
+#if !(MIN_VERSION_base(4,8,0))
 import Control.Applicative ((*>))
+#endif
 
 -- | @oneOf cs@ succeeds if the current character is in the supplied
 -- list of characters @cs@. Returns the parsed character. See also
