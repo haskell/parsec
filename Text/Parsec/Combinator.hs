@@ -3,13 +3,13 @@
 -- Module      :  Text.Parsec.Combinator
 -- Copyright   :  (c) Daan Leijen 1999-2001, (c) Paolo Martini 2007
 -- License     :  BSD-style (see the LICENSE file)
--- 
+--
 -- Maintainer  :  derek.a.elkins@gmail.com
 -- Stability   :  provisional
 -- Portability :  portable
--- 
+--
 -- Commonly used generic combinators
--- 
+--
 -----------------------------------------------------------------------------
 
 module Text.Parsec.Combinator
@@ -44,7 +44,7 @@ choice ps           = foldr (<|>) mzero ps
 -- returned by @p@.
 --
 -- >  priority  = option 0 (do{ d <- digit
--- >                          ; return (digitToInt d) 
+-- >                          ; return (digitToInt d)
 -- >                          })
 
 option :: (Stream s m t) => a -> ParsecT s u m a -> ParsecT s u m a
@@ -75,7 +75,7 @@ between open close p
                     = do{ _ <- open; x <- p; _ <- close; return x }
 
 -- | @skipMany1 p@ applies the parser @p@ /one/ or more times, skipping
--- its result. 
+-- its result.
 
 skipMany1 :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m ()
 skipMany1 p         = do{ _ <- p; skipMany p }
@@ -111,7 +111,7 @@ sepBy :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m sep -> ParsecT s u m
 sepBy p sep         = sepBy1 p sep <|> return []
 
 -- | @sepBy1 p sep@ parses /one/ or more occurrences of @p@, separated
--- by @sep@. Returns a list of values returned by @p@. 
+-- by @sep@. Returns a list of values returned by @p@.
 
 sepBy1 :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m sep -> ParsecT s u m [a]
 sepBy1 p sep        = do{ x <- p
@@ -122,7 +122,7 @@ sepBy1 p sep        = do{ x <- p
 
 -- | @sepEndBy1 p sep@ parses /one/ or more occurrences of @p@,
 -- separated and optionally ended by @sep@. Returns a list of values
--- returned by @p@. 
+-- returned by @p@.
 
 sepEndBy1 :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m sep -> ParsecT s u m [a]
 sepEndBy1 p sep     = do{ x <- p
@@ -144,7 +144,7 @@ sepEndBy p sep      = sepEndBy1 p sep <|> return []
 
 
 -- | @endBy1 p sep@ parses /one/ or more occurrences of @p@, separated
--- and ended by @sep@. Returns a list of values returned by @p@. 
+-- and ended by @sep@. Returns a list of values returned by @p@.
 
 endBy1 :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m sep -> ParsecT s u m [a]
 endBy1 p sep        = many1 (do{ x <- p; _ <- sep; return x })
@@ -159,7 +159,7 @@ endBy p sep         = many (do{ x <- p; _ <- sep; return x })
 
 -- | @count n p@ parses @n@ occurrences of @p@. If @n@ is smaller or
 -- equal to zero, the parser equals to @return []@. Returns a list of
--- @n@ values returned by @p@. 
+-- @n@ values returned by @p@.
 
 count :: (Stream s m t) => Int -> ParsecT s u m a -> ParsecT s u m [a]
 count n p           | n <= 0    = return []
@@ -228,7 +228,7 @@ chainr1 p op        = scan
 -- Tricky combinators
 -----------------------------------------------------------
 -- | The parser @anyToken@ accepts any kind of token. It is for example
--- used to implement 'eof'. Returns the accepted token. 
+-- used to implement 'eof'. Returns the accepted token.
 
 anyToken :: (Stream s m t, Show t) => ParsecT s u m t
 anyToken            = tokenPrim show (\pos _tok _toks -> pos) Just

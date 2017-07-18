@@ -3,11 +3,11 @@
 -- Module      :  Text.Parsec.String
 -- Copyright   :  (c) Antoine Latter 2011
 -- License     :  BSD-style (see the file libraries/parsec/LICENSE)
--- 
+--
 -- Maintainer  :  aslatter@gmail.com
 -- Stability   :  provisional
 -- Portability :  portable
--- 
+--
 -- Convenience definitions for working with lazy 'Text.Text'.
 --
 -----------------------------------------------------------------------------

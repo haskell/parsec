@@ -16,14 +16,14 @@
 -- Module      :  Text.Parsec.Prim
 -- Copyright   :  (c) Daan Leijen 1999-2001, (c) Paolo Martini 2007
 -- License     :  BSD-style (see the LICENSE file)
--- 
+--
 -- Maintainer  :  derek.a.elkins@gmail.com
 -- Stability   :  provisional
 -- Portability :  portable
--- 
+--
 -- The primitive parser combinators.
--- 
------------------------------------------------------------------------------   
+--
+-----------------------------------------------------------------------------
 
 {-# OPTIONS_HADDOCK not-home #-}
 
@@ -259,7 +259,7 @@ parserBind m k
                  -- if (k x) consumes, those go straigt up
                  pcok = cok
                  pcerr = cerr
-                                               
+
                  -- if (k x) doesn't consume input, but is okay,
                  -- we still return in the consumed continuation
                  peok x s err' = cok x s (mergeError err err')
@@ -268,7 +268,7 @@ parserBind m k
                  -- we return the error in the 'consumed-error'
                  -- continuation
                  peerr err' = cerr (mergeError err err')
-            in  unParser (k x) s pcok pcerr peok peerr                      
+            in  unParser (k x) s pcok pcerr peok peerr
 
         -- empty-ok case for m
         meok x s err =
@@ -277,7 +277,7 @@ parserBind m k
                 pcok = cok
                 peok x s err' = eok x s (mergeError err err')
                 pcerr = cerr
-                peerr err' = eerr (mergeError err err') 
+                peerr err' = eerr (mergeError err err')
             in  unParser (k x) s pcok pcerr peok peerr
         -- consumed-error case for m
         mcerr = cerr
@@ -304,7 +304,7 @@ instance MonadPlus (ParsecT s u m) where
     mplus p1 p2 = parserPlus p1 p2
 
 -- | @parserZero@ always fails without consuming any input. @parserZero@ is defined
--- equal to the 'mzero' member of the 'MonadPlus' class and to the 'Control.Applicative.empty' member 
+-- equal to the 'mzero' member of the 'MonadPlus' class and to the 'Control.Applicative.empty' member
 -- of the 'Control.Applicative.Alternative' class.
 
 parserZero :: ParsecT s u m a
@@ -387,7 +387,7 @@ labels p msgs =
 -- TODO: There should be a stronger statement that can be made about this
 
 -- | An instance of @Stream@ has stream type @s@, underlying monad @m@ and token type @t@ determined by the stream
--- 
+--
 -- Some rough guidelines for a \"correct\" instance of Stream:
 --
 --    * unfoldM uncons gives the [t] corresponding to the stream
@@ -428,7 +428,7 @@ tokens _ _ []
     = ParsecT $ \s _ _ eok _ ->
       eok [] s $ unknownError s
 tokens showTokens nextposs tts@(tok:toks)
-    = ParsecT $ \(State input pos u) cok cerr _eok eerr -> 
+    = ParsecT $ \(State input pos u) cok cerr _eok eerr ->
     let
         errEof = (setErrorMessage (Expect (showTokens tts))
                   (newErrorMessage (SysUnExpect "") pos))
@@ -454,7 +454,7 @@ tokens showTokens nextposs tts@(tok:toks)
             Just (x,xs)
                 | tok == x  -> walk toks xs
                 | otherwise -> eerr $ errExpect x
-        
+
 -- | The parser @try p@ behaves like parser @p@, except that it
 -- pretends that it hasn't consumed any input when an error occurs.
 --
@@ -556,10 +556,10 @@ tokenPrim :: (Stream s m t)
 tokenPrim showToken nextpos test = tokenPrimEx showToken nextpos Nothing test
 
 tokenPrimEx :: (Stream s m t)
-            => (t -> String)      
+            => (t -> String)
             -> (SourcePos -> t -> s -> SourcePos)
             -> Maybe (SourcePos -> t -> s -> u -> u)
-            -> (t -> Maybe a)     
+            -> (t -> Maybe a)
             -> ParsecT s u m a
 {-# INLINE tokenPrimEx #-}
 tokenPrimEx showToken nextpos Nothing test
@@ -714,13 +714,13 @@ getPosition :: (Monad m) => ParsecT s u m SourcePos
 getPosition = do state <- getParserState
                  return (statePos state)
 
--- | Returns the current input 
+-- | Returns the current input
 
 getInput :: (Monad m) => ParsecT s u m s
 getInput = do state <- getParserState
               return (stateInput state)
 
--- | @setPosition pos@ sets the current source position to @pos@. 
+-- | @setPosition pos@ sets the current source position to @pos@.
 
 setPosition :: (Monad m) => SourcePos -> ParsecT s u m ()
 setPosition pos
@@ -729,7 +729,7 @@ setPosition pos
 
 -- | @setInput input@ continues parsing with @input@. The 'getInput' and
 -- @setInput@ functions can for example be used to deal with #include
--- files. 
+-- files.
 
 setInput :: (Monad m) => s -> ParsecT s u m ()
 setInput input
@@ -741,7 +741,7 @@ setInput input
 getParserState :: (Monad m) => ParsecT s u m (State s u)
 getParserState = updateParserState id
 
--- | @setParserState st@ set the full parser state to @st@. 
+-- | @setParserState st@ set the full parser state to @st@.
 
 setParserState :: (Monad m) => State s u -> ParsecT s u m (State s u)
 setParserState st = updateParserState (const st)
@@ -751,17 +751,17 @@ setParserState st = updateParserState (const st)
 updateParserState :: (State s u -> State s u) -> ParsecT s u m (State s u)
 updateParserState f =
     ParsecT $ \s _ _ eok _ ->
-    let s' = f s 
-    in eok s' s' $ unknownError s' 
+    let s' = f s
+    in eok s' s' $ unknownError s'
 
 -- < User state combinators
 
--- | Returns the current user state. 
+-- | Returns the current user state.
 
 getState :: (Monad m) => ParsecT s u m u
 getState = stateUser `liftM` getParserState
 
--- | @putState st@ set the user state to @st@. 
+-- | @putState st@ set the user state to @st@.
 
 putState :: (Monad m) => u -> ParsecT s u m ()
 putState u = do _ <- updateParserState $ \s -> s { stateUser = u }

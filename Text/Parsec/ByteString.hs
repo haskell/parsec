@@ -3,11 +3,11 @@
 -- Module      :  Text.Parsec.ByteString
 -- Copyright   :  (c) Paolo Martini 2007
 -- License     :  BSD-style (see the LICENSE file)
--- 
+--
 -- Maintainer  :  derek.a.elkins@gmail.com
 -- Stability   :  provisional
 -- Portability :  portable
--- 
+--
 -- Convinience definitions for working with 'C.ByteString's.
 --
 -----------------------------------------------------------------------------
