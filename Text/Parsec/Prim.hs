@@ -54,6 +54,7 @@ module Text.Parsec.Prim
     , token
     , tokenPrim
     , tokenPrimEx
+    , tokenPrimEx'
     , many
     , skipMany
     , manyAccum
@@ -560,31 +561,44 @@ tokenPrimEx :: (Stream s m t)
             -> (t -> Maybe a)     
             -> ParsecT s u m a
 {-# INLINE tokenPrimEx #-}
-tokenPrimEx showToken nextpos Nothing test
+tokenPrimEx showToken nextpos nextState test = tokenPrimEx' errMsg nextpos nextState test' where
+    errMsg c pos _ = unexpectError (showToken c) pos
+    test' x = case test x of
+      Just x' -> Right x'
+      Nothing -> Left ()
+
+tokenPrimEx' :: (Stream s m t)
+             => (t -> SourcePos -> e -> ParseError)
+             -> (SourcePos -> t -> s -> SourcePos)
+             -> Maybe (SourcePos -> t -> s -> u -> u)
+             -> (t -> Either e a)
+             -> ParsecT s u m a
+{-# INLINE tokenPrimEx' #-}
+tokenPrimEx' errMsg nextpos Nothing test
   = ParsecT $ \(State input pos user) cok cerr eok eerr -> do
       r <- uncons input
       case r of
         Nothing -> eerr $ unexpectError "" pos
         Just (c,cs)
          -> case test c of
-              Just x -> let newpos = nextpos pos c cs
-                            newstate = State cs newpos user
-                        in seq newpos $ seq newstate $
-                           cok x newstate (newErrorUnknown newpos)
-              Nothing -> eerr $ unexpectError (showToken c) pos
-tokenPrimEx showToken nextpos (Just nextState) test
+              Right x -> let newpos = nextpos pos c cs
+                             newstate = State cs newpos user
+                         in seq newpos $ seq newstate $
+                            cok x newstate (newErrorUnknown newpos)
+              Left e -> eerr $ errMsg c pos e
+tokenPrimEx' errMsg nextpos (Just nextState) test
   = ParsecT $ \(State input pos user) cok cerr eok eerr -> do
       r <- uncons input
       case r of
         Nothing -> eerr $ unexpectError "" pos
         Just (c,cs)
          -> case test c of
-              Just x -> let newpos = nextpos pos c cs
-                            newUser = nextState pos c cs user
-                            newstate = State cs newpos newUser
-                        in seq newpos $ seq newstate $
-                           cok x newstate $ newErrorUnknown newpos
-              Nothing -> eerr $ unexpectError (showToken c) pos
+              Right x -> let newpos = nextpos pos c cs
+                             newUser = nextState pos c cs user
+                             newstate = State cs newpos newUser
+                         in seq newpos $ seq newstate $
+                            cok x newstate $ newErrorUnknown newpos
+              Left e -> eerr $ errMsg c pos e
 
 unexpectError msg pos = newErrorMessage (SysUnExpect msg) pos
 
