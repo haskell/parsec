@@ -53,6 +53,7 @@ matrix:
 
 before_install:
  - HC=${CC}
+ - HCPKG=${HC/ghc/ghc-pkg}
  - unset CC
  - PATH=/opt/ghc/bin:/opt/ghc-ppa-tools/bin:$PATH
  - PKGNAME='parsec'
@@ -62,6 +63,8 @@ install:
  - echo "$(${HC} --version) [$(${HC} --print-project-git-commit-id 2> /dev/null || echo '?')]"
  - BENCH=${BENCH---enable-benchmarks}
  - TEST=${TEST---enable-tests}
+ - HADDOCK=${HADDOCK-true}
+ - INSTALLED=${INSTALLED-true}
  - travis_retry cabal update -v
  - sed -i 's/^jobs:/-- jobs:/' ${HOME}/.cabal/config
  - rm -fv cabal.project.local
@@ -90,8 +93,17 @@ script:
  # this builds all libraries and executables (including tests/benchmarks)
  # - rm -rf ./dist-newstyle
 
- # build & run tests
+ # Build with installed constraints for packages in global-db
+ - if $INSTALLED; then
+     ${HCPKG} list --global --simple-output --names-only | sed -r 's/([a-zA-Z0-9-]+*) */--constraint=\1 installed;/g' | sed 's/;$/;all/' | xargs -d ';' cabal new-build -w ${HC} --disable-tests --disable-benchmarks;
+   else echo "Not building with installed constraints"; fi
+
+ # build & run tests, build benchmarks
  - cabal new-build -w ${HC} ${TEST} ${BENCH} all
  - if [ "x$TEST" = "x--enable-tests" ]; then cabal new-test -w ${HC} ${TEST} all; fi
+
+ # haddock
+ - rm -rf ./dist-newstyle
+ - if $HADDOCK; then cabal new-haddock -w ${HC} --disable-tests --disable-benchmarks all; else echo "Skipping haddock generation";fi
 
 # EOF
