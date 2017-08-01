@@ -4,3 +4,5 @@
 /.cabal-sandbox
 /cabal.sandbox.config
 *~
+ghc.mk
+GNUMakefile
