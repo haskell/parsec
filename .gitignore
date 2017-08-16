@@ -1,4 +1,6 @@
 /dist
+/dist-boot
+/dist-install
 /dist-newstyle
 /cabal.project.local
 /.cabal-sandbox
