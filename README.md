@@ -59,7 +59,7 @@ with the `ghci` command).
 
 ```
 Prelude> :m +Text.Parsec
-Prelude Text.Parsec> let parenSet = char '(' >> many parenSet >> char ')'
+Prelude Text.Parsec> let parenSet = char '(' >> many parenSet >> char ')' :: Parsec String () Char
 Loading package transformers-0.3.0.0 ... linking ... done.
 Loading package array-0.5.0.0 ... linking ... done.
 Loading package deepseq-1.3.0.2 ... linking ... done.
