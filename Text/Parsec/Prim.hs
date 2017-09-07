@@ -125,7 +125,7 @@ unexpected msg
 
 -- | @ParsecT s u m a@ is a parser with stream type @s@, user state type @u@,
 -- underlying monad @m@ and return type @a@.  Parsec is strict in the user state.
--- If this is undesirable, simply used a data type like @data Box a = Box a@ and
+-- If this is undesirable, simply use a data type like @data Box a = Box a@ and
 -- the state type @Box YourStateType@ to add a level of indirection.
 
 newtype ParsecT s u m a
