@@ -510,7 +510,7 @@ lookAhead p =
 -- This combinator is expressed in terms of 'tokenPrim'.
 -- It is used to accept user defined token streams. For example,
 -- suppose that we have a stream of basic tokens tupled with source
--- positions. We can than define a parser that accepts single tokens as:
+-- positions. We can then define a parser that accepts single tokens as:
 --
 -- >  mytoken x
 -- >    = token showTok posFromTok testTok
