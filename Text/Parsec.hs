@@ -47,6 +47,7 @@ module Text.Parsec
     , try
     , unexpected
     , choice
+    , one
     , many
     , many1
     , skipMany

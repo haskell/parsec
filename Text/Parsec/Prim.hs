@@ -85,10 +85,17 @@ import qualified Data.ByteString.Char8 as C
 
 import Data.Typeable ( Typeable )
 
+import qualified Data.List.NonEmpty as NonEmpty ( fromList )
+import Data.List ( genericReplicate )
+
 import qualified Data.Text as Text
 import qualified Data.Text.Lazy as TextL
 
-import qualified Control.Applicative as Applicative ( Applicative(..), Alternative(..) )
+import qualified Data.Functor as Functor ( Functor(..), fmap )
+import qualified Data.Semigroup as Semigroup ( Semigroup(..) )
+import qualified Data.Monoid as Monoid ( Monoid(..) )
+
+import qualified Control.Applicative as Applicative ( Applicative(..), Alternative(..), liftA2 )
 import Control.Monad()
 import Control.Monad.Trans
 import Control.Monad.Identity
@@ -184,6 +191,42 @@ data State s u = State {
       stateUser  :: !u
     }
     deriving ( Typeable )
+
+-- | The 'Semigroup' instance for 'ParsecT' is used to append the result
+--  of several parsers, for example:
+--
+--  @
+--  (many $ char 'a') <> (many $ char 'b')
+--  @
+--
+--  The above will parse a string like @"aabbb"@ and return a successful
+--  parse result @"aabbb"@. Compare against the below which will
+--  produce a result of @"bbb"@ for the same input:
+--
+--  @
+--  (many $ char 'a') >> (many $ char 'b')
+--  (many $ char 'a') *> (many $ char 'b')
+--  @
+--
+instance Semigroup.Semigroup a => Semigroup.Semigroup (ParsecT s u m a) where
+    -- | Combines two parsers like '*>', '>>' and @do {...;...}@
+    --  /but/ also combines their results with (<>) instead of
+    --  discarding the first.
+    (<>)     = Applicative.liftA2 (Semigroup.<>)
+    sconcat  = (fmap Semigroup.sconcat) . sequence
+    stimes b = Semigroup.sconcat . NonEmpty.fromList . (genericReplicate b)
+
+-- | The 'Monoid' instance for 'ParsecT' is used for the same purposes as
+-- the 'Semigroup' instance.
+instance ( Monoid.Monoid a
+         , Semigroup.Semigroup (ParsecT s u m a)
+         ) => Monoid.Monoid (ParsecT s u m a) where
+    -- | A parser that always succeeds, consumes no input, and
+    --  returns the underlying 'Monoid''s 'mempty' value
+    mempty = Applicative.pure Monoid.mempty
+
+    -- | See 'ParsecT''s 'Semigroup.<>' implementation
+    mappend = (Semigroup.<>)
 
 instance Functor Consumed where
     fmap f (Consumed x) = Consumed (f x)

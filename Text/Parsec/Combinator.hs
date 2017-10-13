@@ -17,6 +17,7 @@ module Text.Parsec.Combinator
     , count
     , between
     , option, optionMaybe, optional
+    , one
     , skipMany1
     , many1
     , sepBy, sepBy1
@@ -73,6 +74,11 @@ between :: (Stream s m t) => ParsecT s u m open -> ParsecT s u m close
             -> ParsecT s u m a -> ParsecT s u m a
 between open close p
                     = do{ _ <- open; x <- p; _ <- close; return x }
+
+-- | @one p@ applies the parser @p@ once and returns it's result as
+-- a singleton to be compatible with the type of 'many' and 'many1'
+one :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m [a]
+one = fmap pure
 
 -- | @skipMany1 p@ applies the parser @p@ /one/ or more times, skipping
 -- its result.

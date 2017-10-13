@@ -90,6 +90,8 @@ Test-Suite tests
                  Bugs.Bug6,
                  Bugs.Bug9,
                  Bugs.Bug35,
+                 Features,
+                 Features.Feature80,
                  Util
     build-depends:
        base,
