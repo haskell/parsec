@@ -26,6 +26,7 @@ module Text.Parsec.Token
     , TokenParser
     , GenTokenParser (..)
     , makeTokenParser
+    , makeTokenParser'
     ) where
 
 import Data.Char ( isAlpha, toLower, toUpper, isSpace, digitToInt )
@@ -356,7 +357,17 @@ data GenTokenParser s u m
 
 makeTokenParser :: (Stream s m Char)
                 => GenLanguageDef s u m -> GenTokenParser s u m
-makeTokenParser languageDef
+makeTokenParser = makeTokenParser' isSpace
+
+
+-- | Same as @makeTokenParser@, but a function which determines whether or
+-- not a character should count as whitespace is provided. This is
+-- useful for parsing languages like Python, which depend upon
+-- indentation and newlines for syntax.
+
+makeTokenParser' :: (Stream s m Char)
+                => (Char -> Bool) -> GenLanguageDef s u m -> GenTokenParser s u m
+makeTokenParser' isSpace languageDef
     = TokenParser{ identifier = identifier
                  , reserved = reserved
                  , operator = operator
