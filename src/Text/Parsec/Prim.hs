@@ -125,7 +125,7 @@ unexpected msg
 
 -- | @ParsecT s u m a@ is a parser with stream type @s@, user state type @u@,
 -- underlying monad @m@ and return type @a@.  Parsec is strict in the user state.
--- If this is undesirable, simply used a data type like @data Box a = Box a@ and
+-- If this is undesirable, simply use a data type like @data Box a = Box a@ and
 -- the state type @Box YourStateType@ to add a level of indirection.
 
 newtype ParsecT s u m a
@@ -510,7 +510,7 @@ lookAhead p =
 -- This combinator is expressed in terms of 'tokenPrim'.
 -- It is used to accept user defined token streams. For example,
 -- suppose that we have a stream of basic tokens tupled with source
--- positions. We can than define a parser that accepts single tokens as:
+-- positions. We can then define a parser that accepts single tokens as:
 --
 -- >  mytoken x
 -- >    = token showTok posFromTok testTok
