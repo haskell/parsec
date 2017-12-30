@@ -90,7 +90,7 @@ import qualified Data.Text as Text
 import qualified Data.Text.Lazy as TextL
 
 -- To define Monoid instance
-import qualified Data.List.NonEmpty as NonEmpty ( fromList )
+import qualified Data.List.NonEmpty as NE
 import Data.List ( genericReplicate )
 import Data.Traversable (sequence)
 import qualified Data.Functor as Functor ( Functor(..), fmap )
@@ -195,31 +195,39 @@ data State s u = State {
     deriving ( Typeable )
 
 -- | The 'Semigroup' instance for 'ParsecT' is used to append the result
---  of several parsers, for example:
+-- of several parsers, for example:
 --
---  @
---  (many $ char 'a') <> (many $ char 'b')
---  @
+-- @
+-- (many $ char 'a') <> (many $ char 'b')
+-- @
 --
---  The above will parse a string like @"aabbb"@ and return a successful
---  parse result @"aabbb"@. Compare against the below which will
---  produce a result of @"bbb"@ for the same input:
+-- The above will parse a string like @"aabbb"@ and return a successful
+-- parse result @"aabbb"@. Compare against the below which will
+-- produce a result of @"bbb"@ for the same input:
 --
---  @
---  (many $ char 'a') >> (many $ char 'b')
---  (many $ char 'a') *> (many $ char 'b')
---  @
+-- @
+-- (many $ char 'a') >> (many $ char 'b')
+-- (many $ char 'a') *> (many $ char 'b')
+-- @
 --
+-- @since 3.1.12
 instance Semigroup.Semigroup a => Semigroup.Semigroup (ParsecT s u m a) where
     -- | Combines two parsers like '*>', '>>' and @do {...;...}@
     --  /but/ also combines their results with (<>) instead of
     --  discarding the first.
     (<>)     = Applicative.liftA2 (Semigroup.<>)
-    sconcat  = (fmap Semigroup.sconcat) . sequence
-    stimes b = Semigroup.sconcat . NonEmpty.fromList . (genericReplicate b)
+
+#if MIN_VERSION_base(4,8,0)
+    sconcat  = fmap Semigroup.sconcat . sequence
+#else
+    sconcat  = fmap (Semigroup.sconcat . NE.fromList) . sequence . NE.toList
+#endif
+    stimes b = Semigroup.sconcat . NE.fromList . genericReplicate b
 
 -- | The 'Monoid' instance for 'ParsecT' is used for the same purposes as
 -- the 'Semigroup' instance.
+--
+-- @since 3.1.12
 instance ( Monoid.Monoid a
          , Semigroup.Semigroup (ParsecT s u m a)
          ) => Monoid.Monoid (ParsecT s u m a) where
@@ -229,6 +237,8 @@ instance ( Monoid.Monoid a
 
     -- | See 'ParsecT''s 'Semigroup.<>' implementation
     mappend = (Semigroup.<>)
+
+    mconcat = fmap Monoid.mconcat . sequence
 
 instance Functor Consumed where
     fmap f (Consumed x) = Consumed (f x)

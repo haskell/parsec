@@ -1,6 +1,7 @@
 ### 3.1.12.0
 
 - Add `MonadFail` instance for `ParsecT`
+- Add `Semigroup`/`Monoid` instances for `ParsecT`
 
 ### 3.1.11
 
