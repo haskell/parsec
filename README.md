@@ -1,6 +1,8 @@
 Parsec [![Build Status](https://travis-ci.org/haskell/parsec.svg?branch=master)](https://travis-ci.org/haskell/parsec)
 ======
 
+**Please refer to the [package description on Hackage](https://hackage.haskell.org/package/parsec#description) for more information.**
+
 A monadic parser combinator library, written by Daan Leijen. Parsec is designed
 from scratch as an industrial-strength parser library. It is simple, safe, well
 documented, has extensive libraries, good error messages, and is fast.
