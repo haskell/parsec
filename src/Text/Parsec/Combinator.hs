@@ -255,6 +255,17 @@ eof                 = notFollowedBy anyToken <?> "end of input"
 -- >  keywordLet  = try (do{ string "let"
 -- >                       ; notFollowedBy alphaNum
 -- >                       })
+--
+-- __NOTE__: Currently, 'notFollowedBy' exhibits surprising behaviour
+-- when applied to a parser @p@ that doesn't consume any input;
+-- specifically
+--
+--  - @'notFollowedBy' . 'notFollowedBy'@ is /not/ equivalent to 'lookAhead', and
+--
+--  - @'notFollowedBy' 'eof'@ /never/ fails.
+--
+-- See [haskell/parsec#3](https://github.com/haskell/parsec/issues/8)
+-- for more details.
 
 notFollowedBy :: (Stream s m t, Show a) => ParsecT s u m a -> ParsecT s u m ()
 notFollowedBy p     = try (do{ c <- try p; unexpected (show c) }
