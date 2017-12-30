@@ -28,6 +28,7 @@ source-repository head
     location: https://github.com/haskell/parsec
 
 library
+    hs-source-dirs: src
     exposed-modules:
         Text.Parsec
         Text.Parsec.String
@@ -82,10 +83,10 @@ library
         build-depends: fail == 4.9.*
 
 test-suite parsec
-    default-language: Haskell2010
-    type:        exitcode-stdio-1.0
-    hs-source-dirs:  test
-    main-is:     Main.hs
+    type: exitcode-stdio-1.0
+
+    hs-source-dirs: test
+    main-is: Main.hs
     other-modules:
         Bugs
         Bugs.Bug2
@@ -101,6 +102,8 @@ test-suite parsec
         HUnit                >= 1.2 && < 1.4,
         test-framework       >= 0.6 && < 0.9,
         test-framework-hunit >= 0.2 && < 0.4
+
+    default-language: Haskell2010
 
     ghc-options: -Wall
     if impl(ghc >= 8.0)
