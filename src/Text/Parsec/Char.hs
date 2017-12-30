@@ -77,26 +77,26 @@ endOfLine           = newline <|> crlf       <?> "new-line"
 tab :: (Stream s m Char) => ParsecT s u m Char
 tab                 = char '\t'             <?> "tab"
 
--- | Parses an upper case letter (a character between \'A\' and \'Z\').
+-- | Parses an upper case letter (according to 'isUpper').
 -- Returns the parsed character.
 
 upper :: (Stream s m Char) => ParsecT s u m Char
 upper               = satisfy isUpper       <?> "uppercase letter"
 
--- | Parses a lower case character (a character between \'a\' and \'z\').
+-- | Parses a lower case character (according to 'isLower').
 -- Returns the parsed character.
 
 lower :: (Stream s m Char) => ParsecT s u m Char
 lower               = satisfy isLower       <?> "lowercase letter"
 
--- | Parses a letter or digit (a character between \'0\' and \'9\').
--- Returns the parsed character.
+-- | Parses a letter or digit (a character between \'0\' and \'9\')
+-- according to 'isAlphaNum'. Returns the parsed character.
 
 alphaNum :: (Stream s m Char => ParsecT s u m Char)
 alphaNum            = satisfy isAlphaNum    <?> "letter or digit"
 
--- | Parses a letter (an upper case or lower case character). Returns the
--- parsed character.
+-- | Parses a letter (an upper case or lower case character according
+-- to 'isAlpha'). Returns the parsed character.
 
 letter :: (Stream s m Char) => ParsecT s u m Char
 letter              = satisfy isAlpha       <?> "letter"
