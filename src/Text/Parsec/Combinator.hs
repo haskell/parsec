@@ -8,7 +8,10 @@
 -- Stability   :  provisional
 -- Portability :  portable
 --
--- Commonly used generic combinators
+-- Commonly used generic combinators.
+--
+-- See also the [parser-combinators](http://hackage.haskell.org/package/parser-combinators)
+-- package for additional (and generalised) combinators.
 --
 -----------------------------------------------------------------------------
 
