@@ -269,6 +269,7 @@ instance Monad (ParsecT s u m) where
     p >>= f = parserBind p f
     fail = Fail.fail
 
+-- | @since 3.1.12.0
 instance Fail.MonadFail (ParsecT s u m) where
     fail = parserFail
 
