@@ -300,6 +300,8 @@ manyTill p end      = scan
 -- > *> parseTest (oneOf "aeiou"  >> parserTrace "label") "atest"
 -- > label: "test"
 -- > ...
+--
+-- @since 3.1.12.0
 parserTrace :: (Show t, Stream s m t) => String -> ParsecT s u m ()
 parserTrace s = pt <|> return ()
     where
@@ -319,6 +321,8 @@ parserTrace s = pt <|> return ()
 -- > label backtracked
 -- > parse error at (line 1, column 2):
 -- > ...
+--
+-- @since 3.1.12.0
 parserTraced :: (Stream s m t, Show t) => String -> ParsecT s u m b -> ParsecT s u m b
 parserTraced s p = do
   parserTrace s
