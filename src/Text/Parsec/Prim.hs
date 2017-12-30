@@ -93,7 +93,7 @@ import qualified Data.Text.Lazy as TextL
 import qualified Data.List.NonEmpty as NE
 import Data.List ( genericReplicate )
 import Data.Traversable (sequence)
-import qualified Data.Functor as Functor ( Functor(..), fmap )
+import qualified Data.Functor as Functor ( Functor(..) )
 import qualified Data.Semigroup as Semigroup ( Semigroup(..) )
 import qualified Data.Monoid as Monoid ( Monoid(..) )
 
@@ -238,7 +238,7 @@ instance ( Monoid.Monoid a
     -- | See 'ParsecT''s 'Semigroup.<>' implementation
     mappend = (Semigroup.<>)
 
-    mconcat = fmap Monoid.mconcat . sequence
+    mconcat = Functor.fmap Monoid.mconcat . sequence
 
 instance Functor Consumed where
     fmap f (Consumed x) = Consumed (f x)
@@ -259,6 +259,8 @@ parsecMap f p
 instance Applicative.Applicative (ParsecT s u m) where
     pure = parserReturn
     (<*>) = ap -- TODO: Can this be optimized?
+    p1 *> p2 = p1 `parserBind` const p2
+    p1 <* p2 = do { x1 <- p1 ; void p2 ; return x1 }
 
 instance Applicative.Alternative (ParsecT s u m) where
     empty = mzero
@@ -267,6 +269,7 @@ instance Applicative.Alternative (ParsecT s u m) where
 instance Monad (ParsecT s u m) where
     return = Applicative.pure
     p >>= f = parserBind p f
+    (>>) = (Applicative.*>)
     fail = Fail.fail
 
 -- | @since 3.1.12.0

@@ -1,7 +1,8 @@
 ### 3.1.12.0
 
 - Add `MonadFail` instance for `ParsecT`
-- Add `Semigroup`/`Monoid` instances for `ParsecT`
+- Add `Semigroup`/`Monoid` instances for `ParsecT` (#80,#82)
+- Fix space leak in Applicative/Monad interface (#37)
 
 ### 3.1.11
 
