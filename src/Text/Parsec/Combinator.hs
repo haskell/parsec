@@ -264,7 +264,7 @@ eof                 = notFollowedBy anyToken <?> "end of input"
 --
 --  - @'notFollowedBy' 'eof'@ /never/ fails.
 --
--- See [haskell/parsec#3](https://github.com/haskell/parsec/issues/8)
+-- See [haskell/parsec#8](https://github.com/haskell/parsec/issues/8)
 -- for more details.
 
 notFollowedBy :: (Stream s m t, Show a) => ParsecT s u m a -> ParsecT s u m ()
