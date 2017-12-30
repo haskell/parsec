@@ -1,18 +1,17 @@
-
 module Bugs.Bug9 ( main ) where
 
-import Control.Applicative ((<*), (<$>), (<$))
-import Text.Parsec
-import Text.Parsec.Language (haskellStyle)
-import Text.Parsec.String (Parser)
-import Text.Parsec.Expr
-import qualified Text.Parsec.Token as P
+import           Control.Applicative            ((<$), (<$>), (<*))
+import           Text.Parsec
+import           Text.Parsec.Expr
+import           Text.Parsec.Language           (haskellStyle)
+import           Text.Parsec.String             (Parser)
+import qualified Text.Parsec.Token              as P
 
-import Test.HUnit hiding ( Test )
-import Test.Framework
-import Test.Framework.Providers.HUnit
+import           Test.Framework
+import           Test.Framework.Providers.HUnit
+import           Test.HUnit                     hiding (Test)
 
-import Util
+import           Util
 
 data Expr = Const Integer | Op Expr Expr
   deriving Show
@@ -42,5 +41,5 @@ parseExpr = buildExpressionParser table (Const <$> integer)
 
         integer    = P.integer    lexer
         reserved   = P.reserved   lexer
-        reservedOp = P.reservedOp lexer
+        _reservedOp = P.reservedOp lexer
 

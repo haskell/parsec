@@ -1,17 +1,14 @@
+module Features.Feature80 ( main ) where
 
-module Features.Feature80
-       ( main
-       ) where
+import           Control.Applicative            (pure)
+import           Control.Monad.Identity
+import           Data.List.NonEmpty
+import           Data.Semigroup
+import           Test.Framework
+import           Test.Framework.Providers.HUnit
+import           Test.HUnit                     hiding (Test)
 
-import Test.HUnit hiding ( Test )
-import Test.Framework
-import Test.Framework.Providers.HUnit
-import Data.List.NonEmpty
-import Data.Semigroup
-import Control.Monad.Identity
-import Control.Applicative (pure)
-
-import Text.Parsec
+import           Text.Parsec
 
 main :: Test
 main =
@@ -22,8 +19,8 @@ main =
     parseString (sconcat $ fromList [as, mempty, bs]) "aabbb" @?= "aabbb"
     parseString (mconcat [as, mempty, bs]) "aabbb" @?= "aabbb"
     parseString (mempty :: ParsecT String () Identity String) "aabbb" @?= ""
-    parseString (stimes 2 str_a) "aabbb" @?= "aa"
-    parseFail   (stimes 3 str_a) "aabbb" @?= "no parse"
+    parseString (stimes (2::Int) str_a) "aabbb" @?= "aa"
+    parseFail   (stimes (3::Int) str_a) "aabbb" @?= "no parse"
     parseString ((one ch_a) <> (one ch_a) <> bs) "aabbb" @?= "aabbb"
 
  where
@@ -41,11 +38,11 @@ main =
    parseString :: ParsecT String () Identity String -> String -> String
    parseString p input =
       case parse p "Example" input of
-        Left{} -> error "Parse failure"
+        Left{}    -> error "Parse failure"
         Right str -> str
 
    parseFail :: ParsecT String () Identity String -> String -> String
    parseFail p input =
       case parse p "Example" input of
-        Left{} -> "no parse"
-        Right _ -> error "Parsed but shouldn't" 
+        Left{}  -> "no parse"
+        Right _ -> error "Parsed but shouldn't"

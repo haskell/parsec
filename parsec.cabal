@@ -103,9 +103,9 @@ test-suite parsec
         mtl,
         parsec,
         -- dependencies whose version bounds are not inherited via lib:parsec
-        HUnit                >= 1.2 && < 1.4,
-        test-framework       >= 0.6 && < 0.9,
-        test-framework-hunit >= 0.2 && < 0.4
+        HUnit                == 1.6.*,
+        test-framework       == 0.8.*,
+        test-framework-hunit == 0.3.*
 
     default-language: Haskell2010
 
