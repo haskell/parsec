@@ -82,6 +82,8 @@ module Text.Parsec
     , sourceName, sourceLine, sourceColumn
     , incSourceLine, incSourceColumn
     , setSourceLine, setSourceColumn, setSourceName
+     -- * Debugging
+    , parserTrace, parserTraced
      -- * Low-level operations
     , manyAccum
     , tokenPrim

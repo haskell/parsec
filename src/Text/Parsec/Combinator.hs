@@ -30,10 +30,13 @@ module Text.Parsec.Combinator
     , eof, notFollowedBy
     -- tricky combinators
     , manyTill, lookAhead, anyToken
+    -- * Debugging
+    , parserTrace, parserTraced
     ) where
 
 import Control.Monad
 import Text.Parsec.Prim
+import Debug.Trace (trace)
 
 -- | @choice ps@ tries to apply the parsers in the list @ps@ in order,
 -- until one of them succeeds. Returns the value of the succeeding
@@ -289,3 +292,34 @@ manyTill p end      = scan
                       scan  = do{ _ <- end; return [] }
                             <|>
                               do{ x <- p; xs <- scan; return (x:xs) }
+
+-- | @parserTrace label@ is an impure function, implemented with "Debug.Trace" that
+-- prints to the console the remaining parser state at the time it is invoked.
+-- It is intended to be used for debugging parsers by inspecting their intermediate states.
+--
+-- > *> parseTest (oneOf "aeiou"  >> parserTrace "label") "atest"
+-- > label: "test"
+-- > ...
+parserTrace :: (Show t, Stream s m t) => String -> ParsecT s u m ()
+parserTrace s = pt <|> return ()
+    where
+        pt = try $ do
+           x <- try $ many1 anyToken
+           trace (s++": " ++ show x) $ try $ eof
+           fail (show x)
+
+-- | @parserTraced label p@ is an impure function, implemented with "Debug.Trace" that
+-- prints to the console the remaining parser state at the time it is invoked.
+-- It then continues to apply parser @p@, and if @p@ fails will indicate that
+-- the label has been backtracked.
+-- It is intended to be used for debugging parsers by inspecting their intermediate states.
+--
+-- > *>  parseTest (oneOf "aeiou"  >> parserTraced "label" (oneOf "nope")) "atest"
+-- > label: "test"
+-- > label backtracked
+-- > parse error at (line 1, column 2):
+-- > ...
+parserTraced :: (Stream s m t, Show t) => String -> ParsecT s u m b -> ParsecT s u m b
+parserTraced s p = do
+  parserTrace s
+  p <|> trace (s ++ " backtracked") (fail s)
