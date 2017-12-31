@@ -3,6 +3,7 @@
 - Add `MonadFail` instance for `ParsecT`
 - Add `Semigroup`/`Monoid` instances for `ParsecT` (#80,#82)
 - Fix space leak in Applicative/Monad interface (#37)
+- Add `parserTrace` and `parserTraced` combinators for debugging.
 
 ### 3.1.11
 
