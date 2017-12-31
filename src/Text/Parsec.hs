@@ -83,6 +83,11 @@ module Text.Parsec
     , incSourceLine, incSourceColumn
     , setSourceLine, setSourceColumn, setSourceName
      -- * Debugging
+     --
+     -- | As a more comprehensive alternative for debugging Parsec parsers,
+     -- there's also the [parsec-free](http://hackage.haskell.org/package/parsec-free)
+     -- package.
+     --
     , parserTrace, parserTraced
      -- * Low-level operations
     , manyAccum

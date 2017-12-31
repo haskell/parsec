@@ -31,6 +31,11 @@ module Text.Parsec.Combinator
     -- tricky combinators
     , manyTill, lookAhead, anyToken
     -- * Debugging
+    --
+    -- | As a more comprehensive alternative for debugging Parsec parsers,
+    -- there's also the [parsec-free](http://hackage.haskell.org/package/parsec-free)
+    -- package.
+    --
     , parserTrace, parserTraced
     ) where
 
