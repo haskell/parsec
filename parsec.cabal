@@ -90,7 +90,7 @@ library
         build-depends: fail == 4.9.*, semigroups == 0.18.*
 
 
-test-suite parsec
+test-suite parsec.
     type: exitcode-stdio-1.0
 
     hs-source-dirs: test
