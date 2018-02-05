@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP, FlexibleContexts #-}
+{-# LANGUAGE CPP, FlexibleContexts, Safe #-}
 
 -----------------------------------------------------------------------------
 -- |

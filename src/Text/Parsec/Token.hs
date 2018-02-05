@@ -2,6 +2,7 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE PolymorphicComponents #-}
+{-# LANGUAGE Safe #-}
 
 -----------------------------------------------------------------------------
 -- |

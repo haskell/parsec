@@ -1,3 +1,6 @@
+-- due to Debug.Trace
+{-# LANGUAGE Trustworthy #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Text.Parsec.Combinator

@@ -1,4 +1,28 @@
+### 3.1.13.0
+
+- Add official support for [`SafeHaskell`](http://downloads.haskell.org/~ghc/latest/docs/html/users_guide/safe_haskell.html)
+
+    **NOTE**: This is the first version whose `SafeHaskell` properties
+    have become an intentional part of the API contract; previous
+    versions were merely accidentally safe-inferred (or not depending
+    on various factors; in other words, this was a fragile
+    property). If you rely on `SafeHaskell` to consider module imports
+    from `parsec` *safe*, this is the first version of `parsec` which
+    actually guarantees a well-defined state; you can declare this
+    requirement by either specifying
+
+        build-depends: parsec >= 3.1.13.0 && < 3.2
+
+    or, starting with `cabal-version:2.0`, via
+
+        build-depends: parsec ^>= 3.1.13.0
+
+- Drop support for GHC 7.0, GHC 7.2, and GHC 7.4.1; support window
+  starts with GHC 7.4.2.
+
 ### 3.1.12.0
+
+- Support limited to GHC 7.0 & GHC 7.2 only
 
 - Add `MonadFail` instance for `ParsecT`
 - Add `Semigroup`/`Monoid` instances for `ParsecT` (#80,#82)

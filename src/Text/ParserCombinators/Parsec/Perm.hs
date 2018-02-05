@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Text.ParserCombinators.Parsec.Perm

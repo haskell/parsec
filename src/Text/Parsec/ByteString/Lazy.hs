@@ -1,9 +1,11 @@
+{-# LANGUAGE Safe #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Text.Parsec.ByteString.Lazy
 -- Copyright   :  (c) Paolo Martini 2007
 -- License     :  BSD-style (see the LICENSE file)
--- 
+--
 -- Maintainer  :  derek.a.elkins@gmail.com
 -- Stability   :  provisional
 -- Portability :  portable

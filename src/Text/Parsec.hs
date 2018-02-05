@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-}
+
 {-|
 Module      :  Text.Parsec
 Copyright   :  (c) Daan Leijen 1999-2001, (c) Paolo Martini 2007
