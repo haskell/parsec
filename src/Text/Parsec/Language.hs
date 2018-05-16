@@ -22,7 +22,7 @@ module Text.Parsec.Language
     , haskellStyle
     , javaStyle
     , LanguageDef
-    , GenLanguageDef
+    , GenLanguageDef(..)
     ) where
 
 import Text.Parsec
