@@ -1,7 +1,6 @@
 cabal-version:  1.12
 name:           parsec
--- FIXME: This is an ugly hack to mark this commit as a transient unofficial one
-version:        3.1.13.0.0.0.0.0
+version:        3.1.13.0
 
 synopsis:       Monadic parser combinators
 description:    Parsec is designed from scratch as an industrial-strength parser
@@ -27,7 +26,7 @@ bug-reports:    https://github.com/haskell/parsec/issues
 category:       Parsing
 
 build-type:     Simple
-tested-with:    GHC ==8.4.1 || ==8.2.2 || ==8.0.2 || ==7.10.3 || ==7.8.4 || ==7.6.3 || ==7.4.2 || ==7.4.1
+tested-with:    GHC ==8.6.1 || ==8.4.3 || ==8.2.2 || ==8.0.2 || ==7.10.3 || ==7.8.4 || ==7.6.3 || ==7.4.2 || ==7.4.1
 
 extra-source-files: ChangeLog.md, README.md
 
@@ -65,7 +64,6 @@ library
         Text.ParserCombinators.Parsec.Token
 
     build-depends:
-        -- FIXME
         base       >= 4.5.0   && < 4.13,
         mtl        >= 1.1.1   && < 2.3,
         bytestring >= 0.9.2.1 && < 0.11,
