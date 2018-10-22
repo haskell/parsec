@@ -201,19 +201,19 @@ data GenTokenParser s u m
 
         naturalOrFloat   :: ParsecT s u m (Either Integer Double),
 
-        -- | Parses a positive whole number in the decimal system. Returns the
+        -- | Parses a non-negative whole number in the decimal system. Returns the
         -- value of the number.
 
         decimal          :: ParsecT s u m Integer,
 
-        -- | Parses a positive whole number in the hexadecimal system. The number
-        -- should be prefixed with \"0x\" or \"0X\". Returns the value of the
+        -- | Parses a non-negative whole number in the hexadecimal system. The
+        -- number should be prefixed with \"x\" or \"X\". Returns the value of the
         -- number.
 
         hexadecimal      :: ParsecT s u m Integer,
 
-        -- | Parses a positive whole number in the octal system. The number
-        -- should be prefixed with \"0o\" or \"0O\". Returns the value of the
+        -- | Parses a non-negative whole number in the octal system. The number
+        -- should be prefixed with \"o\" or \"O\". Returns the value of the
         -- number.
 
         octal            :: ParsecT s u m Integer,
