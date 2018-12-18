@@ -271,7 +271,9 @@ instance Monad (ParsecT s u m) where
     return = Applicative.pure
     p >>= f = parserBind p f
     (>>) = (Applicative.*>)
+#if !MIN_VERSION_base(4,13,0)
     fail = Fail.fail
+#endif
 
 -- | @since 3.1.12.0
 instance Fail.MonadFail (ParsecT s u m) where
