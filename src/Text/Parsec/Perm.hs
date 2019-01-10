@@ -23,6 +23,12 @@
 -- by Arthur Baars, Andres Loh and Doaitse Swierstra.
 -- Published as a functional pearl at the Haskell Workshop 2001.
 --
+-- From the abstract: 
+--
+-- A permutation phrase is a sequence of elements (possibly of different types) 
+-- in which each element occurs exactly once and the order is irrelevant. 
+-- Some of the permutable elements may be optional.
+--
 -----------------------------------------------------------------------------
 
 
