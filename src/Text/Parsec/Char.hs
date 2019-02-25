@@ -101,7 +101,7 @@ alphaNum :: (Stream s m Char => ParsecT s u m Char)
 alphaNum            = satisfy isAlphaNum    <?> "letter or digit"
 
 -- | Parses an alphabetic Unicode characters (lower-case, upper-case and title-case letters,
--- plus letters of caseless scripts and modifiers letters to 'isAlpha').
+-- plus letters of caseless scripts and modifiers letters according to 'isAlpha').
 -- Returns the parsed character.
 
 letter :: (Stream s m Char) => ParsecT s u m Char
