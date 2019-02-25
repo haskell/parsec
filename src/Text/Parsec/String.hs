@@ -33,7 +33,7 @@ type GenParser tok st = Parsec [tok] st
 -- >                  Left err  -> print err
 -- >                  Right xs  -> print (sum xs)
 -- >              }
-parseFromFile :: Parser a -> String -> IO (Either ParseError a)
+parseFromFile :: Parser a -> FilePath -> IO (Either ParseError a)
 parseFromFile p fname
     = do input <- readFile fname
          return (runP p () fname input)
