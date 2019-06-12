@@ -89,7 +89,7 @@ library
         ghc-options: -Wcompat -Wnoncanonical-monad-instances -Wnoncanonical-monadfail-instances -Wno-trustworthy-safe
     else
         -- provide/emulate `Control.Monad.Fail` and `Semigroup` API for pre-GHC8
-        build-depends: fail == 4.9.*, semigroups == 0.18.*
+        build-depends: fail == 4.9.*, semigroups >= 0.18 && < 0.20
 
         if impl(ghc >= 7.10)
             ghc-options: -fno-warn-trustworthy-safe
