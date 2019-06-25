@@ -124,4 +124,4 @@ test-suite parsec.
     if impl(ghc >= 8.0)
         ghc-options: -Wcompat -Wnoncanonical-monad-instances -Wnoncanonical-monadfail-instances
     else
-        build-depends: semigroups == 0.18.*
+        build-depends: semigroups
