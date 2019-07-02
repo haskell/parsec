@@ -91,11 +91,10 @@ lower               = satisfy isLower       <?> "lowercase letter"
 
 -- | Parses a alphabetic or numeric Unicode characters
 -- according to 'isAlphaNum'. Returns the parsed character.
-
--- | Note that numeric digits outside the ASCII range(such as arabic-indic digits like ٤),
+--
+-- Note that numeric digits outside the ASCII range (such as arabic-indic digits like e.g. \"٤\" or @U+0664@),
 -- as well as numeric characters which aren't digits, are parsed by this function
--- but not by 'digit'. (such characters may be part of identifiers but are not
--- used by the printer and reader to represent numbers).
+-- but not by 'digit'.
 
 alphaNum :: (Stream s m Char => ParsecT s u m Char)
 alphaNum            = satisfy isAlphaNum    <?> "letter or digit"
@@ -107,7 +106,7 @@ alphaNum            = satisfy isAlphaNum    <?> "letter or digit"
 letter :: (Stream s m Char) => ParsecT s u m Char
 letter              = satisfy isAlpha       <?> "letter"
 
--- | Parses a digit. Returns the parsed character.
+-- | Parses an ASCII digit. Returns the parsed character.
 
 digit :: (Stream s m Char) => ParsecT s u m Char
 digit               = satisfy isDigit       <?> "digit"
