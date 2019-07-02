@@ -35,6 +35,8 @@ type GenParser st = Parsec Text.Text st
 -- >                  Left err  -> print err
 -- >                  Right xs  -> print (sum xs)
 -- >              }
+--
+-- @since 3.1.14.0
 
 parseFromFile :: Parser a -> FilePath -> IO (Either ParseError a)
 parseFromFile p fname

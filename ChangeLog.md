@@ -1,3 +1,11 @@
+### 3.1.14.0
+
+- Add `parseFromFile` to `Text.Parsec.Text.Lazy` and `Text.Parsec.Text` (#103, #104).
+
+- Clarify Haddock documentation in various places (#105,#101,#102).
+
+- Add support for `base-4.13`.
+
 ### 3.1.13.0
 
 - Add official support for [`SafeHaskell`](http://downloads.haskell.org/~ghc/latest/docs/html/users_guide/safe_haskell.html)
