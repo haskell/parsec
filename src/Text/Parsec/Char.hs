@@ -89,19 +89,24 @@ upper               = satisfy isUpper       <?> "uppercase letter"
 lower :: (Stream s m Char) => ParsecT s u m Char
 lower               = satisfy isLower       <?> "lowercase letter"
 
--- | Parses a letter or digit (a character between \'0\' and \'9\')
+-- | Parses a alphabetic or numeric Unicode characters
 -- according to 'isAlphaNum'. Returns the parsed character.
+--
+-- Note that numeric digits outside the ASCII range (such as arabic-indic digits like e.g. \"٤\" or @U+0664@),
+-- as well as numeric characters which aren't digits, are parsed by this function
+-- but not by 'digit'.
 
 alphaNum :: (Stream s m Char => ParsecT s u m Char)
 alphaNum            = satisfy isAlphaNum    <?> "letter or digit"
 
--- | Parses a letter (an upper case or lower case character according
--- to 'isAlpha'). Returns the parsed character.
+-- | Parses an alphabetic Unicode characters (lower-case, upper-case and title-case letters,
+-- plus letters of caseless scripts and modifiers letters according to 'isAlpha').
+-- Returns the parsed character.
 
 letter :: (Stream s m Char) => ParsecT s u m Char
 letter              = satisfy isAlpha       <?> "letter"
 
--- | Parses a digit. Returns the parsed character.
+-- | Parses an ASCII digit. Returns the parsed character.
 
 digit :: (Stream s m Char) => ParsecT s u m Char
 digit               = satisfy isDigit       <?> "digit"
