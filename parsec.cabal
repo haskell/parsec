@@ -64,7 +64,7 @@ library
         Text.ParserCombinators.Parsec.Token
 
     build-depends:
-        base       >= 4.5.0   && < 4.14,
+        base       >= 4.5.0   && < 4.15,
         mtl        >= 1.1.1   && < 2.3,
         bytestring >= 0.9.2.1 && < 0.11,
         text      (>= 0.11.3.1 && < 0.12)
