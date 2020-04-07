@@ -30,6 +30,7 @@ import Control.Applicative ((*>))
 -- >   vowel  = oneOf "aeiou"
 
 oneOf :: (Stream s m Char) => [Char] -> ParsecT s u m Char
+{-# INLINABLE oneOf #-}
 oneOf cs            = satisfy (\c -> elem c cs)
 
 -- | As the dual of 'oneOf', @noneOf cs@ succeeds if the current
@@ -39,28 +40,33 @@ oneOf cs            = satisfy (\c -> elem c cs)
 -- >  consonant = noneOf "aeiou"
 
 noneOf :: (Stream s m Char) => [Char] -> ParsecT s u m Char
+{-# INLINABLE noneOf #-}
 noneOf cs           = satisfy (\c -> not (elem c cs))
 
 -- | Skips /zero/ or more white space characters. See also 'skipMany'.
 
 spaces :: (Stream s m Char) => ParsecT s u m ()
+{-# INLINABLE spaces #-}
 spaces              = skipMany space        <?> "white space"
 
 -- | Parses a white space character (any character which satisfies 'isSpace')
 -- Returns the parsed character.
 
 space :: (Stream s m Char) => ParsecT s u m Char
+{-# INLINABLE space #-}
 space               = satisfy isSpace       <?> "space"
 
 -- | Parses a newline character (\'\\n\'). Returns a newline character.
 
 newline :: (Stream s m Char) => ParsecT s u m Char
+{-# INLINABLE newline #-}
 newline             = char '\n'             <?> "lf new-line"
 
 -- | Parses a carriage return character (\'\\r\') followed by a newline character (\'\\n\').
 -- Returns a newline character.
 
 crlf :: (Stream s m Char) => ParsecT s u m Char
+{-# INLINABLE crlf #-}
 crlf                = char '\r' *> char '\n' <?> "crlf new-line"
 
 -- | Parses a CRLF (see 'crlf') or LF (see 'newline') end-of-line.
@@ -70,23 +76,27 @@ crlf                = char '\r' *> char '\n' <?> "crlf new-line"
 --
 
 endOfLine :: (Stream s m Char) => ParsecT s u m Char
+{-# INLINABLE endOfLine #-}
 endOfLine           = newline <|> crlf       <?> "new-line"
 
 -- | Parses a tab character (\'\\t\'). Returns a tab character.
 
 tab :: (Stream s m Char) => ParsecT s u m Char
+{-# INLINABLE tab #-}
 tab                 = char '\t'             <?> "tab"
 
 -- | Parses an upper case letter (according to 'isUpper').
 -- Returns the parsed character.
 
 upper :: (Stream s m Char) => ParsecT s u m Char
+{-# INLINABLE upper #-}
 upper               = satisfy isUpper       <?> "uppercase letter"
 
 -- | Parses a lower case character (according to 'isLower').
 -- Returns the parsed character.
 
 lower :: (Stream s m Char) => ParsecT s u m Char
+{-# INLINABLE lower #-}
 lower               = satisfy isLower       <?> "lowercase letter"
 
 -- | Parses a alphabetic or numeric Unicode characters
@@ -97,6 +107,7 @@ lower               = satisfy isLower       <?> "lowercase letter"
 -- but not by 'digit'.
 
 alphaNum :: (Stream s m Char => ParsecT s u m Char)
+{-# INLINABLE alphaNum #-}
 alphaNum            = satisfy isAlphaNum    <?> "letter or digit"
 
 -- | Parses an alphabetic Unicode characters (lower-case, upper-case and title-case letters,
@@ -104,23 +115,27 @@ alphaNum            = satisfy isAlphaNum    <?> "letter or digit"
 -- Returns the parsed character.
 
 letter :: (Stream s m Char) => ParsecT s u m Char
+{-# INLINABLE letter #-}
 letter              = satisfy isAlpha       <?> "letter"
 
 -- | Parses an ASCII digit. Returns the parsed character.
 
 digit :: (Stream s m Char) => ParsecT s u m Char
+{-# INLINABLE digit #-}
 digit               = satisfy isDigit       <?> "digit"
 
 -- | Parses a hexadecimal digit (a digit or a letter between \'a\' and
 -- \'f\' or \'A\' and \'F\'). Returns the parsed character.
 
 hexDigit :: (Stream s m Char) => ParsecT s u m Char
+{-# INLINABLE hexDigit #-}
 hexDigit            = satisfy isHexDigit    <?> "hexadecimal digit"
 
 -- | Parses an octal digit (a character between \'0\' and \'7\'). Returns
 -- the parsed character.
 
 octDigit :: (Stream s m Char) => ParsecT s u m Char
+{-# INLINABLE octDigit #-}
 octDigit            = satisfy isOctDigit    <?> "octal digit"
 
 -- | @char c@ parses a single character @c@. Returns the parsed
@@ -129,11 +144,13 @@ octDigit            = satisfy isOctDigit    <?> "octal digit"
 -- >  semiColon  = char ';'
 
 char :: (Stream s m Char) => Char -> ParsecT s u m Char
+{-# INLINABLE char #-}
 char c              = satisfy (==c)  <?> show [c]
 
 -- | This parser succeeds for any character. Returns the parsed character.
 
 anyChar :: (Stream s m Char) => ParsecT s u m Char
+{-# INLINABLE anyChar #-}
 anyChar             = satisfy (const True)
 
 -- | The parser @satisfy f@ succeeds for any character for which the
@@ -144,6 +161,7 @@ anyChar             = satisfy (const True)
 -- >  oneOf cs  = satisfy (\c -> c `elem` cs)
 
 satisfy :: (Stream s m Char) => (Char -> Bool) -> ParsecT s u m Char
+{-# INLINABLE satisfy #-}
 satisfy f           = tokenPrim (\c -> show [c])
                                 (\pos c _cs -> updatePosChar pos c)
                                 (\c -> if f c then Just c else Nothing)
@@ -155,4 +173,5 @@ satisfy f           = tokenPrim (\c -> show [c])
 -- >              <|> string "mod"
 
 string :: (Stream s m Char) => String -> ParsecT s u m String
+{-# INLINABLE string #-}
 string s            = tokens show updatePosString s

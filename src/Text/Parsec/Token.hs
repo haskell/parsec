@@ -357,6 +357,7 @@ data GenTokenParser s u m
 
 makeTokenParser :: (Stream s m Char)
                 => GenLanguageDef s u m -> GenTokenParser s u m
+{-# INLINABLE makeTokenParser #-}
 makeTokenParser languageDef
     = TokenParser{ identifier = identifier
                  , reserved = reserved

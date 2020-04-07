@@ -156,6 +156,7 @@ newtype ParsecT s u m a
 -- | Low-level unpacking of the ParsecT type. To run your parser, please look to
 -- runPT, runP, runParserT, runParser and other such functions.
 runParsecT :: Monad m => ParsecT s u m a -> State s u -> m (Consumed (m (Reply s u a)))
+{-# INLINABLE runParsecT #-}
 runParsecT p s = unParser p s cok cerr eok eerr
     where cok a s' err = return . Consumed . return $ Ok a s' err
           cerr err = return . Consumed . return $ Error err
@@ -164,6 +165,7 @@ runParsecT p s = unParser p s cok cerr eok eerr
 
 -- | Low-level creation of the ParsecT type. You really shouldn't have to do this.
 mkPT :: Monad m => (State s u -> m (Consumed (m (Reply s u a)))) -> ParsecT s u m a
+{-# INLINABLE mkPT #-}
 mkPT k = ParsecT $ \s cok cerr eok eerr -> do
            cons <- k s
            case cons of
@@ -586,6 +588,7 @@ token :: (Stream s Identity t)
       -> (t -> SourcePos)         -- ^ Computes the position of a token.
       -> (t -> Maybe a)           -- ^ Matching function for the token to parse.
       -> Parsec s u a
+{-# INLINABLE token #-}
 token showToken tokpos test = tokenPrim showToken nextpos test
     where
         nextpos _ tok ts = case runIdentity (uncons ts) of
@@ -698,6 +701,7 @@ manyErr = error "Text.ParserCombinators.Parsec.Prim.many: combinator 'many' is a
 
 runPT :: (Stream s m t)
       => ParsecT s u m a -> u -> SourceName -> s -> m (Either ParseError a)
+{-# INLINABLE runPT #-}
 runPT p u name s
     = do res <- runParsecT p (State s (initialPos name) u)
          r <- parserReply res
