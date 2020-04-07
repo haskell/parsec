@@ -96,6 +96,7 @@ buildExpressionParser :: (Stream s m t)
                       => OperatorTable s u m a
                       -> ParsecT s u m a
                       -> ParsecT s u m a
+{-# INLINABLE buildExpressionParser #-}
 buildExpressionParser operators simpleExpr
     = foldl (makeParser) simpleExpr operators
     where
