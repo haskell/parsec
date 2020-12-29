@@ -46,7 +46,7 @@ module Text.Parsec.Combinator
 import Control.Monad
 
 #if __GLASGOW_HASKELL__ < 710
-import Data.Functor((<$>))
+import Data.Functor((<$), (<$>))
 #endif
 
 import Text.Parsec.Prim
@@ -86,7 +86,7 @@ optionMaybe p       = option Nothing (Just <$> p)
 
 optional :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m ()
 {-# INLINABLE optional #-}
-optional p          = do{ _ <- p; return ()} <|> return ()
+optional p          = (() <$ p) <|> return ()
 
 -- | @between open close p@ parses @open@, followed by @p@ and @close@.
 -- Returns the value returned by @p@.
@@ -96,15 +96,14 @@ optional p          = do{ _ <- p; return ()} <|> return ()
 between :: (Stream s m t) => ParsecT s u m open -> ParsecT s u m close
             -> ParsecT s u m a -> ParsecT s u m a
 {-# INLINABLE between #-}
-between open close p
-                    = do{ _ <- open; x <- p; _ <- close; return x }
+between open close p = open *> p <* close
 
 -- | @skipMany1 p@ applies the parser @p@ /one/ or more times, skipping
 -- its result.
 
 skipMany1 :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m ()
 {-# INLINABLE skipMany1 #-}
-skipMany1 p         = do{ _ <- p; skipMany p }
+skipMany1 p         = p *> skipMany p
 {-
 skipMany p          = scan
                     where
@@ -118,7 +117,7 @@ skipMany p          = scan
 
 many1 :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m [a]
 {-# INLINABLE many1 #-}
-many1 p             = do{ x <- p; xs <- many p; return (x:xs) }
+many1 p             = (:) <$> p <*> many p
 {-
 many p              = scan id
                     where
@@ -143,10 +142,7 @@ sepBy p sep         = sepBy1 p sep <|> return []
 
 sepBy1 :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m sep -> ParsecT s u m [a]
 {-# INLINABLE sepBy1 #-}
-sepBy1 p sep        = do{ x <- p
-                        ; xs <- many (sep >> p)
-                        ; return (x:xs)
-                        }
+sepBy1 p sep        = (:) <$> p <*> (many (sep *> p))
 
 
 -- | @sepEndBy1 p sep@ parses /one/ or more occurrences of @p@,
@@ -156,11 +152,7 @@ sepBy1 p sep        = do{ x <- p
 sepEndBy1 :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m sep -> ParsecT s u m [a]
 {-# INLINABLE sepEndBy1 #-}
 sepEndBy1 p sep     = do{ x <- p
-                        ; do{ _ <- sep
-                            ; xs <- sepEndBy p sep
-                            ; return (x:xs)
-                            }
-                          <|> return [x]
+                        ; (sep *> fmap (x:) (sepEndBy p sep)) <|> return [x]
                         }
 
 -- | @sepEndBy p sep@ parses /zero/ or more occurrences of @p@,
@@ -179,7 +171,7 @@ sepEndBy p sep      = sepEndBy1 p sep <|> return []
 
 endBy1 :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m sep -> ParsecT s u m [a]
 {-# INLINABLE endBy1 #-}
-endBy1 p sep        = many1 (do{ x <- p; _ <- sep; return x })
+endBy1 p sep        = many1 (p <* sep)
 
 -- | @endBy p sep@ parses /zero/ or more occurrences of @p@, separated
 -- and ended by @sep@. Returns a list of values returned by @p@.
@@ -188,7 +180,7 @@ endBy1 p sep        = many1 (do{ x <- p; _ <- sep; return x })
 
 endBy :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m sep -> ParsecT s u m [a]
 {-# INLINABLE endBy #-}
-endBy p sep         = many (do{ x <- p; _ <- sep; return x })
+endBy p sep         = many (p <* sep)
 
 -- | @count n p@ parses @n@ occurrences of @p@. If @n@ is smaller or
 -- equal to zero, the parser equals to @return []@. Returns a list of
@@ -240,8 +232,7 @@ chainl1 :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m (a -> a -> a) -> P
 chainl1 p op        = do{ x <- p; rest x }
                     where
                       rest x    = do{ f <- op
-                                    ; y <- p
-                                    ; rest (f x y)
+                                    ; rest . f x <$> p
                                     }
                                 <|> return x
 
@@ -304,7 +295,7 @@ eof                 = notFollowedBy anyToken <?> "end of input"
 
 notFollowedBy :: (Stream s m t, Show a) => ParsecT s u m a -> ParsecT s u m ()
 {-# INLINABLE notFollowedBy #-}
-notFollowedBy p     = try (do{ c <- try p; unexpected (show c) }
+notFollowedBy p     = try ((try p >>= unexpected . show)
                            <|> return ()
                           )
 
@@ -323,9 +314,7 @@ manyTill :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m end -> ParsecT s 
 {-# INLINABLE manyTill #-}
 manyTill p end      = scan
                     where
-                      scan  = do{ _ <- end; return [] }
-                            <|>
-                              do{ x <- p; xs <- scan; return (x:xs) }
+                      scan  = ([] <$ end) <|> ((:) <$> p <*> scan)
 
 -- | @parserTrace label@ is an impure function, implemented with "Debug.Trace" that
 -- prints to the console the remaining parser state at the time it is invoked.
