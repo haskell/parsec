@@ -15,7 +15,7 @@
 -----------------------------------------------------------------------------
 
 module Text.Parsec.ByteString
-    ( Parser, GenParser, parseFromFile
+    ( Parser, ParserU, GenParser, parseFromFile, parseFromFile'
     ) where
 
 import Text.Parsec.Error
@@ -23,8 +23,23 @@ import Text.Parsec.Prim
 
 import qualified Data.ByteString.Char8 as C
 
-type Parser = Parsec C.ByteString ()
+type ParserU u = Parsec C.ByteString u
+type Parser = ParserU ()
 type GenParser t st = Parsec C.ByteString st
+
+
+-- | @parseFromFile' p u filePath@ runs a strict bytestring parser @p@ on the
+-- input read from @filePath@ using 'ByteString.Char8.readFile' with start state @u@.
+-- Returns either a 'ParseError' ('Left') or a value of type @a@ ('Right').
+--
+-- >  main    = do{ result <- parseFromFile' numbers () "digits.txt"
+-- >              ; case result of
+-- >                  Left err  -> print err
+-- >                  Right xs  -> print (sum xs)
+-- >              }
+parseFromFile' :: ParserU u a -> u -> FilePath -> IO (Either ParseError a)
+parseFromFile' p u fname = runP p u fname <$> C.readFile fname
+
 
 -- | @parseFromFile p filePath@ runs a strict bytestring parser @p@ on the
 -- input read from @filePath@ using 'ByteString.Char8.readFile'. Returns either a 'ParseError'
@@ -35,8 +50,5 @@ type GenParser t st = Parsec C.ByteString st
 -- >                  Left err  -> print err
 -- >                  Right xs  -> print (sum xs)
 -- >              }
-
 parseFromFile :: Parser a -> FilePath -> IO (Either ParseError a)
-parseFromFile p fname
-    = do input <- C.readFile fname
-         return (runP p () fname input)
+parseFromFile = (`parseFromFile'` ())
