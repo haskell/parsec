@@ -30,7 +30,7 @@ module Text.Parsec.Token
 
 import Data.Char ( isAlpha, toLower, toUpper, isSpace, digitToInt )
 #if __GLASGOW_HASKELL__ < 710
-import Control.Applicative((<*>))
+import Control.Applicative((<*), (<*>), (*>))
 import Data.Functor((<$>))
 #endif
 #if MIN_VERSION_base(4,7,0)
@@ -448,8 +448,8 @@ makeTokenParser languageDef
     stringLetter    = satisfy (\c -> (c /= '"') && (c /= '\\') && (c > '\026'))
 
     stringEscape    = do{ _ <- char '\\'
-                        ;     ( escapeGap >> return Nothing )
-                          <|> ( escapeEmpty >> return Nothing )
+                        ;     ( Nothing <$ escapeGap)
+                          <|> ( Nothing <$ escapeEmpty)
                           <|> ( Just <$> escapeCode )
                         }
 
@@ -573,8 +573,8 @@ makeTokenParser languageDef
                         ; f <$> nat
                         }
 
-    sign            =   (char '-' >> return negate)
-                    <|> (char '+' >> return id)
+    sign            =   (negate <$ char '-')
+                    <|> (id <$ char '+')
                     <|> return id
 
     nat             = zeroNumber <|> decimal
@@ -629,7 +629,7 @@ makeTokenParser languageDef
 
     caseString name
         | caseSensitive languageDef  = string name
-        | otherwise               = do{ walk name; return name }
+        | otherwise               = name <$ walk name
         where
           walk []     = return ()
           walk (c:cs) = do{ _ <- caseChar c <?> msg; walk cs }
@@ -649,12 +649,7 @@ makeTokenParser languageDef
           }
 
 
-    ident
-        = do{ c <- identStart languageDef
-            ; cs <- many (identLetter languageDef)
-            ; return (c:cs)
-            }
-        <?> "identifier"
+    ident = ((:) <$> identStart languageDef <*> many (identLetter languageDef)) <?> "identifier"
 
     isReservedName name
         = isReserved theReservedNames caseName
@@ -686,8 +681,7 @@ makeTokenParser languageDef
     symbol name
         = lexeme (string name)
 
-    lexeme p
-        = do{ x <- p; whiteSpace; return x  }
+    lexeme p = p <* whiteSpace
 
 
     --whiteSpace
@@ -720,7 +714,7 @@ makeTokenParser languageDef
         | otherwise                = inCommentSingle
 
     inCommentMulti
-        =   do{ _ <- try (string (commentEnd languageDef)) ; return () }
+        =   (() <$ try (string (commentEnd languageDef)))
         <|> do{ multiLineComment                     ; inCommentMulti }
         <|> do{ skipMany1 (noneOf startEnd)          ; inCommentMulti }
         <|> do{ _ <- oneOf startEnd                  ; inCommentMulti }
@@ -729,7 +723,7 @@ makeTokenParser languageDef
           startEnd   = nub (commentEnd languageDef ++ commentStart languageDef)
 
     inCommentSingle
-        =   do{ _ <- try (string (commentEnd languageDef)); return () }
+        =   (() <$ try (string (commentEnd languageDef)))
         <|> do{ skipMany1 (noneOf startEnd)         ; inCommentSingle }
         <|> do{ _ <- oneOf startEnd                 ; inCommentSingle }
         <?> "end of comment"

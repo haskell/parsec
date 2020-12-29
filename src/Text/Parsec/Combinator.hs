@@ -46,6 +46,7 @@ module Text.Parsec.Combinator
 import Control.Monad
 
 #if __GLASGOW_HASKELL__ < 710
+import Control.Applicative((<*), (<*>), (*>))
 import Data.Functor((<$), (<$>))
 #endif
 
