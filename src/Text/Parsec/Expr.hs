@@ -98,7 +98,7 @@ buildExpressionParser :: (Stream s m t)
                       -> ParsecT s u m a
 {-# INLINABLE buildExpressionParser #-}
 buildExpressionParser operators simpleExpr
-    = foldl (makeParser) simpleExpr operators
+    = foldl makeParser simpleExpr operators
     where
       makeParser term ops
         = let (rassoc,lassoc,nassoc

@@ -1,5 +1,4 @@
 {-# LANGUAGE CPP #-}
-{-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE PolymorphicComponents #-}
 {-# LANGUAGE Safe #-}
@@ -438,16 +437,16 @@ makeTokenParser languageDef
                         }
                       <?> "literal string")
 
-    stringChar      =   do{ c <- stringLetter; return (Just c) }
+    stringChar      =   Just <$> stringLetter
                     <|> stringEscape
                     <?> "string character"
 
     stringLetter    = satisfy (\c -> (c /= '"') && (c /= '\\') && (c > '\026'))
 
     stringEscape    = do{ _ <- char '\\'
-                        ;     do{ _ <- escapeGap  ; return Nothing }
-                          <|> do{ _ <- escapeEmpty; return Nothing }
-                          <|> do{ esc <- escapeCode; return (Just esc) }
+                        ;     ( escapeGap >> return Nothing )
+                          <|> ( escapeEmpty >> return Nothing )
+                          <|> ( Just <$> escapeCode )
                         }
 
     escapeEmpty     = char '&'
@@ -484,7 +483,7 @@ makeTokenParser languageDef
 
 
     -- escape code tables
-    escMap          = zip ("abfnrtv\\\"\'") ("\a\b\f\n\r\t\v\\\"\'")
+    escMap          = zip "abfnrtv\\\"\'" "\a\b\f\n\r\t\v\\\"\'"
     asciiMap        = zip (ascii3codes ++ ascii2codes) (ascii3 ++ ascii2)
 
     ascii2codes     = ["BS","HT","LF","VT","FF","CR","SO","SI","EM",
@@ -503,7 +502,7 @@ makeTokenParser languageDef
     -----------------------------------------------------------
     -- Numbers
     -----------------------------------------------------------
-    naturalOrFloat  = lexeme (natFloat) <?> "number"
+    naturalOrFloat  = lexeme natFloat   <?> "number"
 
     float           = lexeme floating   <?> "float"
     integer         = lexeme int        <?> "integer"
@@ -567,8 +566,7 @@ makeTokenParser languageDef
 
     -- integers and naturals
     int             = do{ f <- lexeme sign
-                        ; n <- nat
-                        ; return (f n)
+                        ; f <$> nat
                         }
 
     sign            =   (char '-' >> return negate)
@@ -604,16 +602,12 @@ makeTokenParser languageDef
     operator =
         lexeme $ try $
         do{ name <- oper
-          ; if (isReservedOp name)
+          ; if isReservedOp name
              then unexpected ("reserved operator " ++ show name)
              else return name
           }
 
-    oper =
-        do{ c <- (opStart languageDef)
-          ; cs <- many (opLetter languageDef)
-          ; return (c:cs)
-          }
+    oper = (:) <$> opStart languageDef <*> many (opLetter languageDef)
         <?> "operator"
 
     isReservedOp name =
@@ -645,7 +639,7 @@ makeTokenParser languageDef
     identifier =
         lexeme $ try $
         do{ name <- ident
-          ; if (isReservedName name)
+          ; if isReservedName name
              then unexpected ("reserved word " ++ show name)
              else return name
           }
@@ -669,7 +663,7 @@ makeTokenParser languageDef
         = scan names
         where
           scan []       = False
-          scan (r:rs)   = case (compare r name) of
+          scan (r:rs)   = case compare r name of
                             LT  -> scan rs
                             EQ  -> True
                             GT  -> False

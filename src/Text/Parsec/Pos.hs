@@ -47,8 +47,7 @@ data SourcePos  = SourcePos SourceName !Line !Column
 -- line number and column number.
 
 newPos :: SourceName -> Line -> Column -> SourcePos
-newPos name line column
-    = SourcePos name line column
+newPos = SourcePos
 
 -- | Create a new 'SourcePos' with the given source name,
 -- and line number and column number set to 1, the upper left.
@@ -95,15 +94,14 @@ setSourceLine (SourcePos name _line column) n = SourcePos name n column
 -- | Set the column number of a source position.
 
 setSourceColumn :: SourcePos -> Column -> SourcePos
-setSourceColumn (SourcePos name line _column) n = SourcePos name line n
+setSourceColumn (SourcePos name line _column) = SourcePos name line
 
 -- | The expression @updatePosString pos s@ updates the source position
 -- @pos@ by calling 'updatePosChar' on every character in @s@, ie.
 -- @foldl updatePosChar pos string@.
 
 updatePosString :: SourcePos -> String -> SourcePos
-updatePosString pos string
-    = foldl updatePosChar pos string
+updatePosString = foldl updatePosChar
 
 -- | Update a source position given a character. If the character is a
 -- newline (\'\\n\') or carriage return (\'\\r\') the line number is

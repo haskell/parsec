@@ -180,12 +180,11 @@ showErrorMessages ::
     String -> String -> String -> String -> String -> [Message] -> String
 showErrorMessages msgOr msgUnknown msgExpecting msgUnExpected msgEndOfInput msgs
     | null msgs = msgUnknown
-    | otherwise = concat $ map ("\n"++) $ clean $
-                 [showSysUnExpect,showUnExpect,showExpect,showMessages]
+    | otherwise = concatMap ("\n"++) $ clean [showSysUnExpect,showUnExpect,showExpect,showMessages]
     where
-      (sysUnExpect,msgs1) = span ((SysUnExpect "") ==) msgs
-      (unExpect,msgs2)    = span ((UnExpect    "") ==) msgs1
-      (expect,messages)   = span ((Expect      "") ==) msgs2
+      (sysUnExpect,msgs1) = span (SysUnExpect "" ==) msgs
+      (unExpect,msgs2)    = span (UnExpect    "" ==) msgs1
+      (expect,messages)   = span (Expect      "" ==) msgs2
 
       showExpect      = showMany msgExpecting expect
       showUnExpect    = showMany msgUnExpected unExpect

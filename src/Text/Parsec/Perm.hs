@@ -1,5 +1,4 @@
 {-# LANGUAGE CPP #-}
-{-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE ExistentialQuantification #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE StandaloneDeriving #-}
@@ -83,7 +82,7 @@ ptest
 -- new permutation parser that includes @p@.
 
 (<||>) :: (Stream s Identity tok) => StreamPermParser s st (a -> b) -> Parsec s st a -> StreamPermParser s st b
-(<||>) perm p     = add perm p
+(<||>)            = add
 
 -- | The expression @f \<$$> p@ creates a fresh permutation parser
 -- consisting of parser @p@. The the final result of the permutation

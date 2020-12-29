@@ -4,10 +4,8 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE FunctionalDependencies #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE PolymorphicComponents #-}
 {-# LANGUAGE Safe #-}
-{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE UndecidableInstances #-}
 
 {-# OPTIONS_GHC -fno-warn-name-shadowing #-}
@@ -408,7 +406,7 @@ infixr 1 <|>
 -- combinator, the message would be like '...: expecting \"let\" or
 -- letter', which is less friendly.
 
-(<?>) :: (ParsecT s u m a) -> String -> (ParsecT s u m a)
+(<?>) :: ParsecT s u m a -> String -> ParsecT s u m a
 p <?> msg = label p msg
 
 -- | This combinator implements choice. The parser @p \<|> q@ first
@@ -423,7 +421,7 @@ p <?> msg = label p msg
 -- implementation of the parser combinators and the generation of good
 -- error messages.
 
-(<|>) :: (ParsecT s u m a) -> (ParsecT s u m a) -> (ParsecT s u m a)
+(<|>) :: ParsecT s u m a -> ParsecT s u m a -> ParsecT s u m a
 p1 <|> p2 = mplus p1 p2
 
 -- | A synonym for @\<?>@, but as a function instead of an operator.
@@ -445,8 +443,7 @@ labels p msgs =
    setExpectErrors err []         = setErrorMessage (Expect "") err
    setExpectErrors err [msg]      = setErrorMessage (Expect msg) err
    setExpectErrors err (msg:msgs)
-       = foldr (\msg' err' -> addErrorMessage (Expect msg') err')
-         (setErrorMessage (Expect msg) err) msgs
+       = foldr (addErrorMessage . Expect) (setErrorMessage (Expect msg) err) msgs
 
 -- TODO: There should be a stronger statement that can be made about this
 
@@ -462,7 +459,7 @@ class (Monad m) => Stream s m t | s -> t where
     uncons :: s -> m (Maybe (t,s))
 
 instance (Monad m) => Stream [tok] m tok where
-    uncons []     = return $ Nothing
+    uncons []     = return Nothing
     uncons (t:ts) = return $ Just (t,ts)
     {-# INLINE uncons #-}
 
@@ -494,17 +491,17 @@ tokens _ _ []
 tokens showTokens nextposs tts@(tok:toks)
     = ParsecT $ \(State input pos u) cok cerr _eok eerr ->
     let
-        errEof = (setErrorMessage (Expect (showTokens tts))
-                  (newErrorMessage (SysUnExpect "") pos))
+        errEof = setErrorMessage (Expect (showTokens tts))
+                  (newErrorMessage (SysUnExpect "") pos)
 
-        errExpect x = (setErrorMessage (Expect (showTokens tts))
-                       (newErrorMessage (SysUnExpect (showTokens [x])) pos))
+        errExpect x = setErrorMessage (Expect (showTokens tts))
+                       (newErrorMessage (SysUnExpect (showTokens [x])) pos)
 
         walk []     rs = ok rs
         walk (t:ts) rs = do
           sr <- uncons rs
           case sr of
-            Nothing                 -> cerr $ errEof
+            Nothing                 -> cerr errEof
             Just (x,xs) | t == x    -> walk ts xs
                         | otherwise -> cerr $ errExpect x
 
@@ -514,7 +511,7 @@ tokens showTokens nextposs tts@(tok:toks)
     in do
         sr <- uncons input
         case sr of
-            Nothing         -> eerr $ errEof
+            Nothing         -> eerr errEof
             Just (x,xs)
                 | tok == x  -> walk toks xs
                 | otherwise -> eerr $ errExpect x
@@ -589,7 +586,7 @@ token :: (Stream s Identity t)
       -> (t -> Maybe a)           -- ^ Matching function for the token to parse.
       -> Parsec s u a
 {-# INLINABLE token #-}
-token showToken tokpos test = tokenPrim showToken nextpos test
+token showToken tokpos = tokenPrim showToken nextpos
     where
         nextpos _ tok ts = case runIdentity (uncons ts) of
                              Nothing -> tokpos tok
@@ -618,7 +615,7 @@ tokenPrim :: (Stream s m t)
           -> (t -> Maybe a)                     -- ^ Matching function for the token to parse.
           -> ParsecT s u m a
 {-# INLINE tokenPrim #-}
-tokenPrim showToken nextpos test = tokenPrimEx showToken nextpos Nothing test
+tokenPrim showToken nextpos = tokenPrimEx showToken nextpos Nothing
 
 tokenPrimEx :: (Stream s m t)
             => (t -> String)
@@ -654,7 +651,7 @@ tokenPrimEx showToken nextpos (Just nextState) test
               Nothing -> eerr $ unexpectError (showToken c) pos
 
 unexpectError :: String -> SourcePos -> ParseError
-unexpectError msg pos = newErrorMessage (SysUnExpect msg) pos
+unexpectError = newErrorMessage . SysUnExpect
 
 
 -- | @many p@ applies the parser @p@ /zero/ or more times. Returns a
@@ -690,8 +687,8 @@ manyAccum acc p =
               (seq xs $ walk $ acc x xs)  -- consumed-ok
               cerr                        -- consumed-err
               manyErr                     -- empty-ok
-              (\e -> cok (acc x xs) s' e) -- empty-err
-    in unParser p s (walk []) cerr manyErr (\e -> eok [] s e)
+              (cok (acc x xs) s')         -- empty-err
+    in unParser p s (walk []) cerr manyErr (eok [] s)
 
 manyErr :: a
 manyErr = error "Text.ParserCombinators.Parsec.Prim.many: combinator 'many' is applied to a parser that accepts an empty string."
@@ -777,14 +774,12 @@ parseTest p input
 -- | Returns the current source position. See also 'SourcePos'.
 
 getPosition :: (Monad m) => ParsecT s u m SourcePos
-getPosition = do state <- getParserState
-                 return (statePos state)
+getPosition = statePos <$> getParserState
 
 -- | Returns the current input
 
 getInput :: (Monad m) => ParsecT s u m s
-getInput = do state <- getParserState
-              return (stateInput state)
+getInput = stateInput <$> getParserState
 
 -- | @setPosition pos@ sets the current source position to @pos@.
 
@@ -824,12 +819,12 @@ updateParserState f =
 
 -- | Returns the current user state.
 
-getState :: (Monad m) => ParsecT s u m u
-getState = stateUser `liftM` getParserState
+getState :: Monad m => ParsecT s u m u
+getState = stateUser <$> getParserState
 
 -- | @putState st@ set the user state to @st@.
 
-putState :: (Monad m) => u -> ParsecT s u m ()
+putState :: Monad m => u -> ParsecT s u m ()
 putState u = do _ <- updateParserState $ \s -> s { stateUser = u }
                 return ()
 

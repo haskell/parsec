@@ -31,7 +31,7 @@ import Control.Applicative ((*>))
 
 oneOf :: (Stream s m Char) => [Char] -> ParsecT s u m Char
 {-# INLINABLE oneOf #-}
-oneOf cs            = satisfy (\c -> elem c cs)
+oneOf cs            = satisfy (`elem` cs)
 
 -- | As the dual of 'oneOf', @noneOf cs@ succeeds if the current
 -- character /not/ in the supplied list of characters @cs@. Returns the
@@ -41,7 +41,7 @@ oneOf cs            = satisfy (\c -> elem c cs)
 
 noneOf :: (Stream s m Char) => [Char] -> ParsecT s u m Char
 {-# INLINABLE noneOf #-}
-noneOf cs           = satisfy (\c -> not (elem c cs))
+noneOf cs           = satisfy (`notElem` cs)
 
 -- | Skips /zero/ or more white space characters. See also 'skipMany'.
 
@@ -174,4 +174,4 @@ satisfy f           = tokenPrim (\c -> show [c])
 
 string :: (Stream s m Char) => String -> ParsecT s u m String
 {-# INLINABLE string #-}
-string s            = tokens show updatePosString s
+string              = tokens show updatePosString

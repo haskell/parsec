@@ -52,7 +52,7 @@ import Debug.Trace (trace)
 
 choice :: (Stream s m t) => [ParsecT s u m a] -> ParsecT s u m a
 {-# INLINABLE choice #-}
-choice ps           = foldr (<|>) mzero ps
+choice              = foldr (<|>) mzero
 
 -- | @option x p@ tries to apply parser @p@. If @p@ fails without
 -- consuming input, it returns the value @x@, otherwise the value
@@ -72,7 +72,7 @@ option x p          = p <|> return x
 
 optionMaybe :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m (Maybe a)
 {-# INLINABLE optionMaybe #-}
-optionMaybe p       = option Nothing (liftM Just p)
+optionMaybe p       = option Nothing (Just <$> p)
 
 -- | @optional p@ tries to apply parser @p@.  It will parse @p@ or nothing.
 -- It only fails if @p@ fails after consuming input. It discards the result
@@ -191,7 +191,7 @@ endBy p sep         = many (do{ x <- p; _ <- sep; return x })
 count :: (Stream s m t) => Int -> ParsecT s u m a -> ParsecT s u m [a]
 {-# INLINABLE count #-}
 count n p           | n <= 0    = return []
-                    | otherwise = sequence (replicate n p)
+                    | otherwise = replicateM n p
 
 -- | @chainr p op x@ parses /zero/ or more occurrences of @p@,
 -- separated by @op@ Returns a value obtained by a /right/ associative
@@ -248,13 +248,11 @@ chainr1 :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m (a -> a -> a) -> P
 {-# INLINABLE chainr1 #-}
 chainr1 p op        = scan
                     where
-                      scan      = do{ x <- p; rest x }
-
-                      rest x    = do{ f <- op
-                                    ; y <- scan
-                                    ; return (f x y)
-                                    }
-                                <|> return x
+                      scan      = p >>= rest
+                      rest x    = do {
+                          f <- op;
+                          f x <$> scan
+                      } <|> return x
 
 -----------------------------------------------------------
 -- Tricky combinators
@@ -338,7 +336,7 @@ parserTrace s = pt <|> return ()
     where
         pt = try $ do
            x <- try $ many1 anyToken
-           trace (s++": " ++ show x) $ try $ eof
+           trace (s++": " ++ show x) $ try eof
            fail (show x)
 
 -- | @parserTraced label p@ is an impure function, implemented with "Debug.Trace" that
