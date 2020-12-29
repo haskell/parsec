@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 -----------------------------------------------------------------------------
@@ -17,6 +18,10 @@
 module Text.Parsec.Text
     ( Parser, ParserU, GenParser, parseFromFile, parseFromFile'
     ) where
+
+#if __GLASGOW_HASKELL__ < 710
+import Data.Functor((<$>))
+#endif
 
 import qualified Data.Text as Text
 import Text.Parsec.Prim
