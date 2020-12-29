@@ -83,6 +83,10 @@ import Prelude hiding (sequence)
 import qualified Data.ByteString.Lazy.Char8 as CL
 import qualified Data.ByteString.Char8 as C
 
+#if __GLASGOW_HASKELL__ < 710
+import Data.Functor((<$>))
+#endif
+
 import Data.Typeable ( Typeable )
 
 import qualified Data.Text as Text

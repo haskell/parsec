@@ -1,4 +1,5 @@
 -- due to Debug.Trace
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Trustworthy #-}
 
 -----------------------------------------------------------------------------
@@ -43,6 +44,11 @@ module Text.Parsec.Combinator
     ) where
 
 import Control.Monad
+
+#if __GLASGOW_HASKELL__ < 710
+import Data.Functor((<$>))
+#endif
+
 import Text.Parsec.Prim
 import Debug.Trace (trace)
 
