@@ -232,7 +232,7 @@ chainl1 :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m (a -> a -> a) -> P
 chainl1 p op        = do{ x <- p; rest x }
                     where
                       rest x    = do{ f <- op
-                                    ; rest . f x <$> p
+                                    ; p >>= rest . f x
                                     }
                                 <|> return x
 
