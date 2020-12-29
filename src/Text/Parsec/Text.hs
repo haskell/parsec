@@ -39,6 +39,4 @@ type GenParser st = Parsec Text.Text st
 -- @since 3.1.14.0
 
 parseFromFile :: Parser a -> FilePath -> IO (Either ParseError a)
-parseFromFile p fname
-    = do input <- T.readFile fname
-         return (runP p () fname input)
+parseFromFile p fname = runP p () fname <$> T.readFile fname

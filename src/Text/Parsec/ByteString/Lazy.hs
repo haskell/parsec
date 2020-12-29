@@ -37,6 +37,4 @@ type GenParser t st = Parsec C.ByteString st
 -- >              }
 
 parseFromFile :: Parser a -> FilePath -> IO (Either ParseError a)
-parseFromFile p fname
-    = do input <- C.readFile fname
-         return (runP p () fname input)
+parseFromFile p fname = runP p () fname <$> C.readFile fname
