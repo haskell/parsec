@@ -31,7 +31,7 @@ module Text.Parsec.Token
 import Data.Char ( isAlpha, toLower, toUpper, isSpace, digitToInt )
 #if __GLASGOW_HASKELL__ < 710
 import Control.Applicative((<*), (<*>), (*>))
-import Data.Functor((<$>))
+import Data.Functor((<$), (<$>))
 #endif
 #if MIN_VERSION_base(4,7,0)
 import Data.Typeable ( Typeable )
