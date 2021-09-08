@@ -7,16 +7,15 @@ import           Text.Parsec.Language           (haskellStyle)
 import           Text.Parsec.String             (Parser)
 import qualified Text.Parsec.Token              as P
 
-import           Test.Framework
-import           Test.Framework.Providers.HUnit
-import           Test.HUnit                     hiding (Test)
+import           Test.Tasty
+import           Test.Tasty.HUnit
 
 import           Util
 
 data Expr = Const Integer | Op Expr Expr
   deriving Show
 
-main :: Test
+main :: TestTree
 main =
   testCase "Tracing of current position in error message (#9)"
   $ result @?= ["unexpected '>'","expecting operator or end of input"]

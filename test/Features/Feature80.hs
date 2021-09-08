@@ -4,13 +4,12 @@ import           Control.Applicative            (pure)
 import           Control.Monad.Identity
 import           Data.List.NonEmpty
 import           Data.Semigroup
-import           Test.Framework
-import           Test.Framework.Providers.HUnit
-import           Test.HUnit                     hiding (Test)
+import           Test.Tasty
+import           Test.Tasty.HUnit
 
 import           Text.Parsec
 
-main :: Test
+main :: TestTree
 main =
   testCase "Monoid instance (#80)" $ do
     parseString (as <> bs) "aabbb" @?= "aabbb"

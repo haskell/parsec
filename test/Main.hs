@@ -1,12 +1,12 @@
 
-import Test.Framework
+import Test.Tasty
 
 import Bugs ( bugs )
 import Features ( features )
 
 main :: IO ()
 main = do
-  defaultMain
+  defaultMain $ testGroup "All"
     [ testGroup "Bugs" bugs
     , testGroup "Features" features
     ]

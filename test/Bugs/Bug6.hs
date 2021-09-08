@@ -3,16 +3,15 @@ module Bugs.Bug6
        ( main
        ) where
 
-import Test.HUnit hiding ( Test )
-import Test.Framework
-import Test.Framework.Providers.HUnit
+import Test.Tasty
+import Test.Tasty.HUnit
 
 import Text.Parsec
 import Text.Parsec.String
 
 import Util
 
-main :: Test
+main :: TestTree
 main =
   testCase "Look-ahead preserving error location (#6)" $
   parseErrors variable "return" @?= ["'return' is a reserved keyword"]
