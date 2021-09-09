@@ -6,9 +6,8 @@ import Text.Parsec.Language
 import Text.Parsec.String
 import qualified Text.Parsec.Token as Token
 
-import Test.HUnit hiding (Test)
-import Test.Framework
-import Test.Framework.Providers.HUnit
+import Test.Tasty
+import Test.Tasty.HUnit
 
 trickyFloats :: [String]
 trickyFloats =
@@ -36,5 +35,5 @@ testBatch :: Assertion
 testBatch = mapM_ testFloat trickyFloats
     where testFloat x = parse float "" x @?= Right (read x :: Double)
 
-main :: Test
+main :: TestTree
 main = testCase "Quality of output of Text.Parsec.Token.float (#35)" testBatch
