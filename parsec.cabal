@@ -17,7 +17,7 @@ description:    Parsec is designed from scratch as an industrial-strength parser
                 the legacy @parsec-2@ API and may be removed at some point in
                 the future.
 
-license:        BSD3
+license:        BSD2
 license-file:   LICENSE
 author:         Daan Leijen <daan@microsoft.com>, Paolo Martini <paolo@nemail.it>, Antoine Latter <aslatter@gmail.com>
 maintainer:     Herbert Valerio Riedel <hvr@gnu.org>
