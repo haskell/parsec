@@ -34,6 +34,8 @@ module Text.Parsec
     , tokens
     , runParserT
     , runParser
+    , evalParserT
+    , evalParser
     , parse
     , parseTest
     , getPosition

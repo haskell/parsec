@@ -64,6 +64,8 @@ module Text.Parsec.Prim
     , runP
     , runParserT
     , runParser
+    , evalParserT
+    , evalParser
     , parse
     , parseTest
     , getPosition
@@ -714,9 +716,28 @@ runPT p u name s
                 Consumed r -> r
                 Empty    r -> r
 
+evalPT :: (Stream s m t)
+       => ParsecT s u m a -> u -> SourceName -> s -> m (Either ParseError (u, a))
+{-# INLINABLE evalPT #-}
+evalPT p u name s
+    = do res <- runParsecT p (State s (initialPos name) u)
+         r <- parserReply res
+         case r of
+           Ok x st _ -> pure $ Right (stateUser st, x)
+           Error err -> pure $ Left err
+    where
+        parserReply res
+            = case res of
+                Consumed r -> r
+                Empty    r -> r
+
 runP :: (Stream s Identity t)
      => Parsec s u a -> u -> SourceName -> s -> Either ParseError a
 runP p u name s = runIdentity $ runPT p u name s
+
+evalP :: (Stream s Identity t)
+      => Parsec s u a -> u -> SourceName -> s -> Either ParseError (u, a)
+evalP p u name s = runIdentity $ evalPT p u name s
 
 -- | The most general way to run a parser. @runParserT p state filePath
 -- input@ runs parser @p@ on the input list of tokens @input@,
@@ -728,6 +749,13 @@ runP p u name s = runIdentity $ runPT p u name s
 runParserT :: (Stream s m t)
            => ParsecT s u m a -> u -> SourceName -> s -> m (Either ParseError a)
 runParserT = runPT
+
+-- | Like 'runParserT' but returns the final state along with the result
+
+evalParserT :: (Stream s m t)
+            => ParsecT s u m a -> u -> SourceName -> s -> m (Either ParseError (u, a))
+evalParserT = evalPT
+
 
 -- | The most general way to run a parser over the Identity monad. @runParser p state filePath
 -- input@ runs parser @p@ on the input list of tokens @input@,
@@ -744,6 +772,11 @@ runParserT = runPT
 runParser :: (Stream s Identity t)
           => Parsec s u a -> u -> SourceName -> s -> Either ParseError a
 runParser = runP
+
+-- | Like 'runParser' but returns the final state along with the result
+evalParser :: (Stream s Identity t)
+           => Parsec s u a -> u -> SourceName -> s -> Either ParseError (u, a)
+evalParser = evalP
 
 -- | @parse p filePath input@ runs a parser @p@ over Identity without user
 -- state. The @filePath@ is only used in error messages and may be the
