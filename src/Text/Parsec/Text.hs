@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 -----------------------------------------------------------------------------
@@ -15,18 +16,37 @@
 -----------------------------------------------------------------------------
 
 module Text.Parsec.Text
-    ( Parser, GenParser, parseFromFile
+    ( Parser, ParserU, GenParser, parseFromFile, parseFromFile'
     ) where
+
+#if __GLASGOW_HASKELL__ < 710
+import Data.Functor((<$>))
+#endif
 
 import qualified Data.Text as Text
 import Text.Parsec.Prim
 import Text.Parsec.Error
 import Data.Text.IO as T
 
-type Parser = Parsec Text.Text ()
+type ParserU u = Parsec Text.Text u
+type Parser = ParserU ()
 type GenParser st = Parsec Text.Text st
 
--- | @parseFromFile p filePath@ runs a strict text parser @p@ on the
+
+-- | @parseFromFile' p u filePath@ runs a strict bytestring parser @p@ on the
+-- input read from @filePath@ using 'Data.Text.IO.readFile' with start state @u@.
+-- Returns either a 'ParseError' ('Left') or a value of type @a@ ('Right').
+--
+-- >  main    = do{ result <- parseFromFile' numbers () "digits.txt"
+-- >              ; case result of
+-- >                  Left err  -> print err
+-- >                  Right xs  -> print (sum xs)
+-- >              }
+parseFromFile' :: ParserU u a -> u -> FilePath -> IO (Either ParseError a)
+parseFromFile' p u fname = runP p u fname <$> T.readFile fname
+
+
+-- | @parseFromFile p filePath@ runs a strict bytestring parser @p@ on the
 -- input read from @filePath@ using 'Data.Text.IO.readFile'. Returns either a 'ParseError'
 -- ('Left') or a value of type @a@ ('Right').
 --
@@ -35,10 +55,5 @@ type GenParser st = Parsec Text.Text st
 -- >                  Left err  -> print err
 -- >                  Right xs  -> print (sum xs)
 -- >              }
---
--- @since 3.1.14.0
-
 parseFromFile :: Parser a -> FilePath -> IO (Either ParseError a)
-parseFromFile p fname
-    = do input <- T.readFile fname
-         return (runP p () fname input)
+parseFromFile = (`parseFromFile'` ())
