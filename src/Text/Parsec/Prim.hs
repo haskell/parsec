@@ -149,7 +149,7 @@ newtype ParsecT s u m a
              }
 #if MIN_VERSION_base(4,7,0)
      deriving ( Typeable )
-     -- GHC 7.6 doesn't like deriving instances of Typeabl1 for types with
+     -- GHC 7.6 doesn't like deriving instances of Typeable for types with
      -- non-* type-arguments.
 #endif
 
