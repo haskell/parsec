@@ -171,7 +171,7 @@ data GenTokenParser s u m
 
         stringLiteral    :: ParsecT s u m String,
 
-        -- | This lexeme parser parses a natural number (a positive whole
+        -- | This lexeme parser parses a natural number (a non-negative whole
         -- number). Returns the value of the number. The number can be
         -- specified in 'decimal', 'hexadecimal' or
         -- 'octal'. The number is parsed according to the grammar
