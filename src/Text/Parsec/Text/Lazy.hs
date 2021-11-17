@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 -----------------------------------------------------------------------------
@@ -17,6 +18,10 @@
 module Text.Parsec.Text.Lazy
     ( Parser, GenParser, parseFromFile
     ) where
+
+#if __GLASGOW_HASKELL__ < 710
+import Data.Functor((<$>))
+#endif
 
 import qualified Data.Text.Lazy as Text
 import Text.Parsec.Prim
@@ -39,6 +44,4 @@ type GenParser st = Parsec Text.Text st
 -- @since 3.1.14.0
 
 parseFromFile :: Parser a -> FilePath -> IO (Either ParseError a)
-parseFromFile p fname
-    = do input <- TL.readFile fname
-         return (runP p () fname input)
+parseFromFile p fname = runP p () fname <$> TL.readFile fname

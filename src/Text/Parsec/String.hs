@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE Safe #-}
 
 -----------------------------------------------------------------------------
@@ -18,6 +19,10 @@ module Text.Parsec.String
     ( Parser, GenParser, parseFromFile
     ) where
 
+#if __GLASGOW_HASKELL__ < 710
+import Data.Functor((<$>))
+#endif
+
 import Text.Parsec.Error
 import Text.Parsec.Prim
 
@@ -34,6 +39,4 @@ type GenParser tok st = Parsec [tok] st
 -- >                  Right xs  -> print (sum xs)
 -- >              }
 parseFromFile :: Parser a -> FilePath -> IO (Either ParseError a)
-parseFromFile p fname
-    = do input <- readFile fname
-         return (runP p () fname input)
+parseFromFile p fname = runP p () fname <$> readFile fname
