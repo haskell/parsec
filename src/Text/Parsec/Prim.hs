@@ -318,7 +318,9 @@ parserBind m k
   = ParsecT $ \s cok cerr eok eerr ->
     let
         -- consumed-okay case for m
-        mcok x s err =
+        mcok x s err
+          | errorIsUnknown err = unParser (k x) s cok cerr cok cerr
+          | otherwise =
             let
                  -- if (k x) consumes, those go straigt up
                  pcok = cok
@@ -335,7 +337,9 @@ parserBind m k
             in  unParser (k x) s pcok pcerr peok peerr
 
         -- empty-ok case for m
-        meok x s err =
+        meok x s err
+          | errorIsUnknown err = unParser (k x) s cok cerr eok eerr
+          | otherwise =
             let
                 -- in these cases, (k x) can return as empty
                 pcok = cok

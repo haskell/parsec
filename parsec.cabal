@@ -128,3 +128,10 @@ test-suite parsec.
         ghc-options: -Wcompat -Wnoncanonical-monad-instances -Wnoncanonical-monadfail-instances
     else
         build-depends: semigroups
+
+test-suite parsec-issue127
+    default-language: Haskell2010
+    type: exitcode-stdio-1.0
+    main-is: issue127.hs
+    hs-source-dirs: test
+    build-depends: base, parsec

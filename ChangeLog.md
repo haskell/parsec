@@ -2,6 +2,7 @@
 
 - Add `INLINABLE` pragmas to most overloaded combinators
 - Support recent versions of dependencies
+- Fix memory leak in `>>=` https://github.com/haskell/parsec/issues/127
 
 ### 3.1.14.0
 
