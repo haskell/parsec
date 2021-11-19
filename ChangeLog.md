@@ -1,3 +1,8 @@
+### 3.1.15.0
+
+- Add `INLINABLE` pragmas to most overloaded combinators
+- Support recent versions of dependencies
+
 ### 3.1.14.0
 
 - Add `parseFromFile` to `Text.Parsec.Text.Lazy` and `Text.Parsec.Text` (#103, #104).
