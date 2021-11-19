@@ -41,15 +41,15 @@ module Text.Parsec.Perm
     , (<|?>), (<$?>)
     ) where
 
-import Text.Parsec
-
-import Control.Monad.Identity
+import Control.Monad.Identity ( Identity )
 #if MIN_VERSION_base(4,7,0)
 import Data.Typeable ( Typeable )
 #else
 -- For GHC 7.6
 import Data.Typeable ( Typeable3 )
 #endif
+
+import Text.Parsec
 
 infixl 1 <||>, <|?>
 infixl 2 <$$>, <$?>

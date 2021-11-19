@@ -99,15 +99,15 @@ import qualified Data.Semigroup as Semigroup ( Semigroup(..) )
 import qualified Data.Monoid as Monoid ( Monoid(..) )
 
 import qualified Control.Applicative as Applicative ( Applicative(..), Alternative(..), liftA2 )
-import Control.Monad hiding (sequence)
-import Control.Monad.Trans
-import Control.Monad.Identity hiding (sequence)
+import Control.Monad (MonadPlus (..), ap, void, liftM)
+import Control.Monad.Trans (MonadTrans (lift), MonadIO (liftIO))
+import Control.Monad.Identity (Identity, runIdentity)
 import qualified Control.Monad.Fail as Fail
 
-import Control.Monad.Reader.Class
-import Control.Monad.State.Class
-import Control.Monad.Cont.Class
-import Control.Monad.Error.Class
+import Control.Monad.Reader.Class (MonadReader (..))
+import Control.Monad.State.Class (MonadState (..))
+import Control.Monad.Cont.Class (MonadCont (..))
+import Control.Monad.Error.Class (MonadError (..))
 
 import Text.Parsec.Pos
 import Text.Parsec.Error

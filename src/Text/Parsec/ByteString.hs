@@ -18,10 +18,10 @@ module Text.Parsec.ByteString
     ( Parser, GenParser, parseFromFile
     ) where
 
+import qualified Data.ByteString.Char8 as C
+
 import Text.Parsec.Error
 import Text.Parsec.Prim
-
-import qualified Data.ByteString.Char8 as C
 
 type Parser = Parsec C.ByteString ()
 type GenParser t st = Parsec C.ByteString st
