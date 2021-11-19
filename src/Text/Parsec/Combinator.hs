@@ -42,9 +42,10 @@ module Text.Parsec.Combinator
     , parserTrace, parserTraced
     ) where
 
-import Control.Monad
-import Text.Parsec.Prim
+import Control.Monad (mzero, liftM)
 import Debug.Trace (trace)
+
+import Text.Parsec.Prim
 
 -- | @choice ps@ tries to apply the parsers in the list @ps@ in order,
 -- until one of them succeeds. Returns the value of the succeeding

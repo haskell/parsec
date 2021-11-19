@@ -19,9 +19,10 @@ module Text.Parsec.Text.Lazy
     ) where
 
 import qualified Data.Text.Lazy as Text
+import qualified Data.Text.Lazy.IO as TL
+
 import Text.Parsec.Prim
 import Text.Parsec.Error
-import Data.Text.Lazy.IO as TL
 
 type Parser = Parsec Text.Text ()
 type GenParser st = Parsec Text.Text st

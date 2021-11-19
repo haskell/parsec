@@ -19,9 +19,10 @@ module Text.Parsec.Text
     ) where
 
 import qualified Data.Text as Text
+import qualified Data.Text.IO as T
+
 import Text.Parsec.Prim
 import Text.Parsec.Error
-import Data.Text.IO as T
 
 type Parser = Parsec Text.Text ()
 type GenParser st = Parsec Text.Text st
