@@ -187,7 +187,12 @@ showErrorMessages msgOr msgUnknown msgExpecting msgUnExpected msgEndOfInput msgs
       (unExpect,msgs2)    = span ((UnExpect    "") ==) msgs1
       (expect,messages)   = span ((Expect      "") ==) msgs2
 
-      showExpect      = showMany msgExpecting expect
+      cleanedExpect | containsEofInSysUnExpect = filter (\msg -> messageString msg /= msgEndOfInput) expect
+                    | otherwise = expect
+          where
+              containsEofInSysUnExpect = (null unExpect && not (null sysUnExpect)) && null (messageString $ head sysUnExpect)
+
+      showExpect      = showMany msgExpecting cleanedExpect
       showUnExpect    = showMany msgUnExpected unExpect
       showSysUnExpect | not (null unExpect) ||
                         null sysUnExpect = ""

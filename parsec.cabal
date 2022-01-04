@@ -129,6 +129,13 @@ test-suite parsec.
     else
         build-depends: semigroups
 
+test-suite parsec-issue121
+    default-language: Haskell2010
+    type: exitcode-stdio-1.0
+    main-is: issue121.hs
+    hs-source-dirs: test
+    build-depends: base, parsec, containers
+
 test-suite parsec-issue127
     default-language: Haskell2010
     type: exitcode-stdio-1.0
