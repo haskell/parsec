@@ -10,7 +10,7 @@
 -- Stability   :  provisional
 -- Portability :  portable
 --
--- Convinience definitions for working with 'C.ByteString's.
+-- Convenience definitions for working with 'C.ByteString's.
 --
 -----------------------------------------------------------------------------
 

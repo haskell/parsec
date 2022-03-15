@@ -98,7 +98,7 @@ emptyDef    = LanguageDef
 -- Haskell
 -----------------------------------------------------------
 
--- | A lexer for the haskell language.
+-- | A lexer for the Haskell language.
 
 haskell :: TokenParser st
 haskell      = makeTokenParser haskellDef
@@ -135,7 +135,7 @@ haskell98Def = haskellStyle
 -- Mondrian
 -----------------------------------------------------------
 
--- | A lexer for the mondrian language.
+-- | A lexer for the Mondrian language.
 
 mondrian :: TokenParser st
 mondrian    = makeTokenParser mondrianDef
