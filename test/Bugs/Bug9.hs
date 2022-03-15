@@ -24,7 +24,7 @@ main =
     result :: [String]
     result = parseErrors parseTopLevel "4 >> 5"
 
--- Syntax analaysis
+-- Syntax analysis
 
 parseTopLevel :: Parser Expr
 parseTopLevel = parseExpr <* eof
