@@ -59,7 +59,7 @@
 
 ### 3.1.9
 
-- Many and various updates to documentation and package description (inlcuding
+- Many and various updates to documentation and package description (including
   the homepage links).
 - Add an `Eq` instance for `ParseError`
 - Fixed a regression from 3.1.6: `runP` is again exported from module
