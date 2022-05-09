@@ -322,7 +322,7 @@ parserBind m k
           | errorIsUnknown err = unParser (k x) s cok cerr cok cerr
           | otherwise =
             let
-                 -- if (k x) consumes, those go straigt up
+                 -- if (k x) consumes, those go straight up
                  pcok = cok
                  pcerr = cerr
 

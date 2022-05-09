@@ -330,7 +330,7 @@ data GenTokenParser s u m
 -- defined using the definitions in the @language@ record.
 --
 -- The use of this function is quite stylized - one imports the
--- appropiate language definition and selects the lexical parsers that
+-- appropriate language definition and selects the lexical parsers that
 -- are needed from the resulting 'GenTokenParser'.
 --
 -- >  module Main where
