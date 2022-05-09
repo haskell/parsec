@@ -167,12 +167,24 @@ satisfy f           = tokenPrim (\c -> show [c])
                                 (\pos c _cs -> updatePosChar pos c)
                                 (\c -> if f c then Just c else Nothing)
 
--- | @string s@ parses a sequence of characters given by @s@. Returns
+-- | @'string' s@ parses a sequence of characters given by @s@. Returns
 -- the parsed string (i.e. @s@).
 --
 -- >  divOrMod    =   string "div"
 -- >              <|> string "mod"
+--
+-- Consider using 'string''.
 
 string :: (Stream s m Char) => String -> ParsecT s u m String
 {-# INLINABLE string #-}
 string s            = tokens show updatePosString s
+
+-- | @'string'' s@ parses a sequence of characters given by @s@.
+-- Doesn't consume matching prefix.
+--
+-- >  carOrCdr    =   string' "car"
+-- >              <|> string' "cdr"
+
+string' :: (Stream s m Char) => String -> ParsecT s u m String
+{-# INLINABLE string' #-}
+string' s            = tokens' show updatePosString s
