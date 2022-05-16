@@ -21,6 +21,7 @@ Some links:
   chapter 16 of [Real World Haskell](http://book.realworldhaskell.org/).
 * [An introduction to the Parsec library](http://kunigami.wordpress.com/2014/01/21/an-introduction-to-the-parsec-library)
   on Kunigami's blog.
+* [An introduction to parsing text in Haskell with Parsec](https://jsdw.me/posts/haskell-parsec-basics/) on Wilson's blog.
 * Differences between Parsec and
   [Attoparsec](http://hackage.haskell.org/package/attoparsec)
   (Haskell's other prominent parser library) as explained in
