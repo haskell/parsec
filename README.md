@@ -19,7 +19,7 @@ Some links:
   thanks to Microsoft Research).
 * [Using Parsec](http://book.realworldhaskell.org/read/using-parsec.html),
   chapter 16 of [Real World Haskell](http://book.realworldhaskell.org/).
-* [An introduction to the Parsec library](http://kunigami.wordpress.com/2014/01/21/an-introduction-to-the-parsec-library)
+* [An introduction to the Parsec library](https://www.kuniga.me/blog/2014/01/21/an-introduction-to-the-parsec-library.html)
   on Kunigami's blog.
 * [An introduction to parsing text in Haskell with Parsec](https://jsdw.me/posts/haskell-parsec-basics/) on Wilson's blog.
 * Differences between Parsec and
