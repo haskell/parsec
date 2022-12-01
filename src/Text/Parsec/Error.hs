@@ -1,6 +1,9 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE Safe #-}
 
+-- Disable {-# WARNING #-} for Data.List.head:
+{-# OPTIONS_GHC -Wno-warnings-deprecations #-}
+
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Text.Parsec.Error
