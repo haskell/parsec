@@ -187,16 +187,16 @@ showErrorMessages msgOr msgUnknown msgExpecting msgUnExpected msgEndOfInput msgs
       (unExpect,msgs2)    = span ((UnExpect    "") ==) msgs1
       (expect,messages)   = span ((Expect      "") ==) msgs2
 
-      showExpect      = showMany msgExpecting expect
-      showUnExpect    = showMany msgUnExpected unExpect
-      showSysUnExpect | not (null unExpect) ||
-                        null sysUnExpect = ""
-                      | null firstMsg    = msgUnExpected ++ " " ++ msgEndOfInput
-                      | otherwise        = msgUnExpected ++ " " ++ firstMsg
-          where
-              firstMsg  = messageString (head sysUnExpect)
+      showSysUnExpect
+        | not (null unExpect) = ""
+        | otherwise = case sysUnExpect of
+            SysUnExpect msg : _ ->
+                msgUnExpected ++ " " ++ (if null msg then msgEndOfInput else msg)
+            _ -> ""
 
-      showMessages      = showMany "" messages
+      showUnExpect = showMany msgUnExpected unExpect
+      showExpect   = showMany msgExpecting expect
+      showMessages = showMany "" messages
 
       -- helpers
       showMany pre msgs3 = case clean (map messageString msgs3) of
