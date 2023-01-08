@@ -189,12 +189,12 @@ showErrorMessages msgOr msgUnknown msgExpecting msgUnExpected msgEndOfInput msgs
 
       showExpect      = showMany msgExpecting expect
       showUnExpect    = showMany msgUnExpected unExpect
-      showSysUnExpect | not (null unExpect) ||
-                        null sysUnExpect = ""
-                      | null firstMsg    = msgUnExpected ++ " " ++ msgEndOfInput
-                      | otherwise        = msgUnExpected ++ " " ++ firstMsg
-          where
-              firstMsg  = messageString (head sysUnExpect)
+      showSysUnExpect
+          | not (null unExpect)      = ""
+          | []      <- sysUnExpect   = ""
+          | msg : _ <- sysUnExpect
+          , null (messageString msg) = msgUnExpected ++ " " ++ msgEndOfInput
+          | msg : _ <- sysUnExpect   = msgUnExpected ++ " " ++ messageString msg
 
       showMessages      = showMany "" messages
 
