@@ -535,7 +535,7 @@ tokens' _ _ []
     = ParsecT $ \s _ _ eok _ ->
       eok [] s $ unknownError s
 tokens' showTokens nextposs tts@(tok:toks)
-    = ParsecT $ \(State input pos u) cok cerr _eok eerr ->
+    = ParsecT $ \(State input pos u) cok _cerr _eok eerr ->
     let
         errEof = (setErrorMessage (Expect (showTokens tts))
                   (newErrorMessage (SysUnExpect "") pos))
