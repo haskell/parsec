@@ -1,6 +1,6 @@
 cabal-version:  1.12
 name:           parsec
-version:        3.1.15.1
+version:        3.1.16.0
 
 synopsis:       Monadic parser combinators
 description:    Parsec is designed from scratch as an industrial-strength parser
@@ -97,12 +97,13 @@ library
         if impl(ghc >= 7.10)
             ghc-options: -fno-warn-trustworthy-safe
 
-    if impl(ghc >= 9.0)
-        -- these flags may abort compilation with GHC-8.10
-        -- https://gitlab.haskell.org/ghc/ghc/-/merge_requests/3295
-        ghc-options: -Winferred-safe-imports -Wmissing-safe-haskell-mode
+    -- these flags may abort compilation with GHC-8.10
+    -- https://gitlab.haskell.org/ghc/ghc/-/merge_requests/3295
+    -- https://gitlab.haskell.org/ghc/ghc/-/issues/22728
+    -- if impl(ghc >= 9.0)
+    --    -- ghc-options: -Winferred-safe-imports -Wmissing-safe-haskell-mode
 
-test-suite parsec.
+test-suite parsec-tests
     type: exitcode-stdio-1.0
 
     hs-source-dirs: test
@@ -115,6 +116,7 @@ test-suite parsec.
         Bugs.Bug35
         Features
         Features.Feature80
+        Features.Feature150
         Util
 
     build-depends:
