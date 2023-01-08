@@ -184,6 +184,8 @@ string s            = tokens show updatePosString s
 --
 -- >  carOrCdr    =   string' "car"
 -- >              <|> string' "cdr"
+--
+-- @since 3.1.16.0
 
 string' :: (Stream s m Char) => String -> ParsecT s u m String
 {-# INLINABLE string' #-}

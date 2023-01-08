@@ -525,6 +525,8 @@ tokens showTokens nextposs tts@(tok:toks)
                 | otherwise -> eerr $ errExpect x
 
 -- | Like 'tokens', but doesn't consume matching prefix.
+--
+-- @since 3.1.16.0
 tokens' :: (Stream s m t, Eq t)
        => ([t] -> String)      -- Pretty print a list of tokens
        -> (SourcePos -> [t] -> SourcePos)
