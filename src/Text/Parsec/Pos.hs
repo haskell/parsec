@@ -41,7 +41,12 @@ type Column     = Int
 -- 'Ord' class.
 
 data SourcePos  = SourcePos SourceName !Line !Column
-    deriving ( Eq, Ord, Data, Typeable)
+    deriving (Eq, Data, Typeable)
+
+-- | The ordering compares first by line, column, then by sourcename.
+instance Ord SourcePos where
+  compare (SourcePos snA lnA colA) (SourcePos snB lnB colB)
+    = lnA `compare` lnB <> colA `compare` colB <> snA `compare` snB
 
 -- | Create a new 'SourcePos' with the given source name,
 -- line number and column number.
