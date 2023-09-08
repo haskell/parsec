@@ -5,3 +5,9 @@ constraint-set mtl-2.3
   constraints: mtl ^>=2.3
   tests: True
   run-tests: True
+
+constraint-set bytestring-0.12
+  ghc: >=8.2.2
+  constraints: bytestring ^>=0.12
+  tests: True
+  run-tests: True

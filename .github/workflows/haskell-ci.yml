@@ -8,9 +8,9 @@
 #
 # For more information, see https://github.com/haskell-CI/haskell-ci
 #
-# version: 0.16.5
+# version: 0.17.20230826
 #
-# REGENDATA ("0.16.5",["github","cabal.project"])
+# REGENDATA ("0.17.20230826",["github","cabal.project"])
 #
 name: Haskell-CI
 on:
@@ -32,14 +32,19 @@ jobs:
     strategy:
       matrix:
         include:
+          - compiler: ghc-9.8.0.20230822
+            compilerKind: ghc
+            compilerVersion: 9.8.0.20230822
+            setup-method: ghcup
+            allow-failure: true
           - compiler: ghc-9.6.2
             compilerKind: ghc
             compilerVersion: 9.6.2
             setup-method: ghcup
             allow-failure: false
-          - compiler: ghc-9.4.5
+          - compiler: ghc-9.4.7
             compilerKind: ghc
-            compilerVersion: 9.4.5
+            compilerVersion: 9.4.7
             setup-method: ghcup
             allow-failure: false
           - compiler: ghc-9.2.8
@@ -110,8 +115,9 @@ jobs:
           apt-get install -y --no-install-recommends gnupg ca-certificates dirmngr curl git software-properties-common libtinfo5
           if [ "${{ matrix.setup-method }}" = ghcup ]; then
             mkdir -p "$HOME/.ghcup/bin"
-            curl -sL https://downloads.haskell.org/ghcup/0.1.19.2/x86_64-linux-ghcup-0.1.19.2 > "$HOME/.ghcup/bin/ghcup"
+            curl -sL https://downloads.haskell.org/ghcup/0.1.19.5/x86_64-linux-ghcup-0.1.19.5 > "$HOME/.ghcup/bin/ghcup"
             chmod a+x "$HOME/.ghcup/bin/ghcup"
+            "$HOME/.ghcup/bin/ghcup" config add-release-channel https://raw.githubusercontent.com/haskell/ghcup-metadata/master/ghcup-prereleases-0.0.7.yaml;
             "$HOME/.ghcup/bin/ghcup" install ghc "$HCVER" || (cat "$HOME"/.ghcup/logs/*.* && false)
             "$HOME/.ghcup/bin/ghcup" install cabal 3.10.1.0 || (cat "$HOME"/.ghcup/logs/*.* && false)
           else
@@ -119,8 +125,9 @@ jobs:
             apt-get update
             apt-get install -y "$HCNAME"
             mkdir -p "$HOME/.ghcup/bin"
-            curl -sL https://downloads.haskell.org/ghcup/0.1.19.2/x86_64-linux-ghcup-0.1.19.2 > "$HOME/.ghcup/bin/ghcup"
+            curl -sL https://downloads.haskell.org/ghcup/0.1.19.5/x86_64-linux-ghcup-0.1.19.5 > "$HOME/.ghcup/bin/ghcup"
             chmod a+x "$HOME/.ghcup/bin/ghcup"
+            "$HOME/.ghcup/bin/ghcup" config add-release-channel https://raw.githubusercontent.com/haskell/ghcup-metadata/master/ghcup-prereleases-0.0.7.yaml;
             "$HOME/.ghcup/bin/ghcup" install cabal 3.10.1.0 || (cat "$HOME"/.ghcup/logs/*.* && false)
           fi
         env:
@@ -135,10 +142,12 @@ jobs:
           echo "CABAL_CONFIG=$HOME/.cabal/config" >> "$GITHUB_ENV"
           HCDIR=/opt/$HCKIND/$HCVER
           if [ "${{ matrix.setup-method }}" = ghcup ]; then
-            HC=$HOME/.ghcup/bin/$HCKIND-$HCVER
+            HC=$("$HOME/.ghcup/bin/ghcup" whereis ghc "$HCVER")
+            HCPKG=$(echo "$HC" | sed 's#ghc$#ghc-pkg#')
+            HADDOCK=$(echo "$HC" | sed 's#ghc$#haddock#')
             echo "HC=$HC" >> "$GITHUB_ENV"
-            echo "HCPKG=$HOME/.ghcup/bin/$HCKIND-pkg-$HCVER" >> "$GITHUB_ENV"
-            echo "HADDOCK=$HOME/.ghcup/bin/haddock-$HCVER" >> "$GITHUB_ENV"
+            echo "HCPKG=$HCPKG" >> "$GITHUB_ENV"
+            echo "HADDOCK=$HADDOCK" >> "$GITHUB_ENV"
             echo "CABAL=$HOME/.ghcup/bin/cabal-3.10.1.0 -vnormal+nowrap" >> "$GITHUB_ENV"
           else
             HC=$HCDIR/bin/$HCKIND
@@ -152,7 +161,7 @@ jobs:
           echo "HCNUMVER=$HCNUMVER" >> "$GITHUB_ENV"
           echo "ARG_TESTS=--enable-tests" >> "$GITHUB_ENV"
           echo "ARG_BENCH=--enable-benchmarks" >> "$GITHUB_ENV"
-          echo "HEADHACKAGE=false" >> "$GITHUB_ENV"
+          if [ $((HCNUMVER >= 90800)) -ne 0 ] ; then echo "HEADHACKAGE=true" >> "$GITHUB_ENV" ; else echo "HEADHACKAGE=false" >> "$GITHUB_ENV" ; fi
           echo "ARG_COMPILER=--$HCKIND --with-compiler=$HC" >> "$GITHUB_ENV"
           echo "GHCJSARITH=0" >> "$GITHUB_ENV"
         env:
@@ -181,6 +190,18 @@ jobs:
           repository hackage.haskell.org
             url: http://hackage.haskell.org/
           EOF
+          if $HEADHACKAGE; then
+          cat >> $CABAL_CONFIG <<EOF
+          repository head.hackage.ghc.haskell.org
+             url: https://ghc.gitlab.haskell.org/head.hackage/
+             secure: True
+             root-keys: 7541f32a4ccca4f97aea3b22f5e593ba2c0267546016b992dfadcd2fe944e55d
+                        26021a13b401500c8eb2761ca95c61f2d625bfef951b939a8124ed12ecf07329
+                        f76d08be13e9a61a377a85e2fb63f4c5435d40f8feb3e12eb05905edb8cdea89
+             key-threshold: 3
+          active-repositories: hackage.haskell.org, head.hackage.ghc.haskell.org:override
+          EOF
+          fi
           cat >> $CABAL_CONFIG <<EOF
           program-default-options
             ghc-options: $GHCJOBS +RTS -M3G -RTS
@@ -232,6 +253,9 @@ jobs:
           if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods" >> cabal.project ; fi
           cat >> cabal.project <<EOF
           EOF
+          if $HEADHACKAGE; then
+          echo "allow-newer: $($HCPKG list --simple-output | sed -E 's/([a-zA-Z-]+)-[0-9.]+/*:\1,/g')" >> cabal.project
+          fi
           $HCPKG list --simple-output --names-only | perl -ne 'for (split /\s+/) { print "constraints: $_ installed\n" unless /^(parsec)$/; }' >> cabal.project.local
           cat cabal.project
           cat cabal.project.local
@@ -272,8 +296,17 @@ jobs:
       - name: prepare for constraint sets
         run: |
           rm -f cabal.project.local
+      - name: constraint set bytestring-0.12
+        run: |
+          if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then $CABAL v2-build $ARG_COMPILER --enable-tests --disable-benchmarks --constraint='bytestring ^>=0.12' all --dry-run ; fi
+          if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then cabal-plan topo | sort ; fi
+          if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then $CABAL v2-build $ARG_COMPILER --enable-tests --disable-benchmarks --constraint='bytestring ^>=0.12' --dependencies-only -j2 all ; fi
+          if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then $CABAL v2-build $ARG_COMPILER --enable-tests --disable-benchmarks --constraint='bytestring ^>=0.12' all ; fi
+          if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then $CABAL v2-test $ARG_COMPILER --enable-tests --disable-benchmarks --constraint='bytestring ^>=0.12' all ; fi
       - name: constraint set mtl-2.3
         run: |
+          if [ $((HCNUMVER >= 80600)) -ne 0 ] ; then $CABAL v2-build $ARG_COMPILER --enable-tests --disable-benchmarks --constraint='mtl ^>=2.3' all --dry-run ; fi
+          if [ $((HCNUMVER >= 80600)) -ne 0 ] ; then cabal-plan topo | sort ; fi
           if [ $((HCNUMVER >= 80600)) -ne 0 ] ; then $CABAL v2-build $ARG_COMPILER --enable-tests --disable-benchmarks --constraint='mtl ^>=2.3' --dependencies-only -j2 all ; fi
           if [ $((HCNUMVER >= 80600)) -ne 0 ] ; then $CABAL v2-build $ARG_COMPILER --enable-tests --disable-benchmarks --constraint='mtl ^>=2.3' all ; fi
           if [ $((HCNUMVER >= 80600)) -ne 0 ] ; then $CABAL v2-test $ARG_COMPILER --enable-tests --disable-benchmarks --constraint='mtl ^>=2.3' all ; fi
