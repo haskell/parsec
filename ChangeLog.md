@@ -7,6 +7,7 @@
 - Change the position comparison in `mergeError` to not compare source names.
   This doesn't alter reported error positions when only a single source is parsed.
   This fixes performance issue caused by long source names.
+- Add `Exception ParseError` instance
 
 ### 3.1.16.0
 
