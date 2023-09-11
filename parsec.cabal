@@ -141,3 +141,17 @@ test-suite parsec-issue127
     main-is: issue127.hs
     hs-source-dirs: test
     build-depends: base, parsec
+
+test-suite parsec-issue171
+    default-language: Haskell2010
+    type: exitcode-stdio-1.0
+    main-is: issue171.hs
+    hs-source-dirs: test
+    build-depends: base, tasty, tasty-hunit, deepseq, parsec
+
+test-suite parsec-issue175
+    default-language: Haskell2010
+    type: exitcode-stdio-1.0
+    main-is: issue175.hs
+    hs-source-dirs: test
+    build-depends: base, tasty, tasty-hunit, parsec
