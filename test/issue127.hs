@@ -1,3 +1,4 @@
+-- this should run in constant memory
 module Main (main) where
   
 import Text.Parsec
