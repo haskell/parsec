@@ -106,24 +106,6 @@ skipMany p          = scan
                       scan  = do{ p; scan } <|> return ()
 -}
 
--- | @many1 p@ applies the parser @p@ /one/ or more times. Returns a
--- list of the returned values of @p@.
---
--- >  word  = many1 letter
-
-many1 :: (Stream s m t) => ParsecT s u m a -> ParsecT s u m [a]
-{-# INLINABLE many1 #-}
-many1 p             = do{ x <- p; xs <- many p; return (x:xs) }
-{-
-many p              = scan id
-                    where
-                      scan f    = do{ x <- p
-                                    ; scan (\tail -> f (x:tail))
-                                    }
-                                <|> return (f [])
--}
-
-
 -- | @sepBy p sep@ parses /zero/ or more occurrences of @p@, separated
 -- by @sep@. Returns a list of values returned by @p@.
 --
