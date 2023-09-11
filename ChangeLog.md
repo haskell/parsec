@@ -1,3 +1,10 @@
+### 3.1.17.0
+
+- Move `many1 :: ParsecT s u m a -> ParsecT s u m [a]` to `Text.Parsec.Prim`.
+  Drop `Stream` constraint requirement.
+- Implement `Alternative.many/some` using `Text.Parsec.Prim.many/many1`,
+  instead of default implementation.
+
 ### 3.1.16.0
 
 - Add `tokens'` and `string'` combinators which don't consume the prefix.

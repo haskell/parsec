@@ -61,6 +61,7 @@ module Text.Parsec.Prim
     , many
     , skipMany
     , manyAccum
+    , many1
     , runPT
     , runP
     , runParserT
@@ -269,6 +270,9 @@ instance Applicative.Applicative (ParsecT s u m) where
 instance Applicative.Alternative (ParsecT s u m) where
     empty = mzero
     (<|>) = mplus
+
+    many = many
+    some = many1
 
 instance Monad (ParsecT s u m) where
     return = Applicative.pure
@@ -714,6 +718,15 @@ many :: ParsecT s u m a -> ParsecT s u m [a]
 many p
   = do xs <- manyAccum (:) p
        return (reverse xs)
+
+-- | @many1 p@ applies the parser @p@ /one/ or more times. Returns a
+-- list of the returned values of @p@.
+--
+-- >  word  = many1 letter
+
+many1 :: ParsecT s u m a -> ParsecT s u m [a]
+{-# INLINABLE many1 #-}
+many1 p = do{ x <- p; xs <- many p; return (x:xs) }
 
 -- | @skipMany p@ applies the parser @p@ /zero/ or more times, skipping
 -- its result.
