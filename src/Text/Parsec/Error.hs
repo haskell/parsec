@@ -25,6 +25,7 @@ module Text.Parsec.Error
     , mergeError
     ) where
 
+import Control.Exception ( Exception )
 import Data.List ( nub, sort )
 import Data.Typeable ( Typeable )
 import qualified Data.Monoid as Mon
@@ -169,6 +170,9 @@ instance Eq ParseError where
         = errorPos l == errorPos r && messageStrs l == messageStrs r
         where
           messageStrs = map messageString . errorMessages
+
+-- | @since 3.1.17.0
+instance Exception ParseError
 
 -- Language independent show function
 
