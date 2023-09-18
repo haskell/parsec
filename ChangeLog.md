@@ -2,8 +2,6 @@
 
 - Move `many1 :: ParsecT s u m a -> ParsecT s u m [a]` to `Text.Parsec.Prim`.
   Drop `Stream` constraint requirement.
-- Implement `Alternative.many/some` using `Text.Parsec.Prim.many/many1`,
-  instead of default implementation.
 - Change the position comparison in `mergeError` to not compare source names.
   This doesn't alter reported error positions when only a single source is parsed.
   This fixes performance issue caused by long source names.
