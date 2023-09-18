@@ -271,8 +271,11 @@ instance Applicative.Alternative (ParsecT s u m) where
     empty = mzero
     (<|>) = mplus
 
-    many = many
-    some = many1
+    -- TODO: https://github.com/haskell/parsec/issues/179
+    -- investigate what's wrong with haddock
+    --
+    -- many = many
+    -- some = many1
 
 instance Monad (ParsecT s u m) where
     return = Applicative.pure
