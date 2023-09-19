@@ -114,6 +114,7 @@ test-suite parsec-tests
         Bugs.Bug6
         Bugs.Bug9
         Bugs.Bug35
+        Bugs.Bug179
         Features
         Features.Feature80
         Features.Feature150
