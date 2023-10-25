@@ -42,10 +42,11 @@ module Text.Parsec.Combinator
     , parserTrace, parserTraced
     ) where
 
-import Control.Monad (mzero, liftM)
+import Control.Monad (mzero, liftM, void)
 import Debug.Trace (trace)
 
 import Text.Parsec.Prim
+import Text.Parsec (newline)
 
 -- | @choice ps@ tries to apply the parsers in the list @ps@ in order,
 -- until one of them succeeds. Returns the value of the succeeding
@@ -258,6 +259,14 @@ eof :: (Stream s m t, Show t) => ParsecT s u m ()
 {-# INLINABLE eof #-}
 eof                 = notFollowedBy anyToken <?> "end of input"
 
+-- | This parser only succeeds at the end of the input or on a new line.
+--
+-- >  eol  = (void newline <|> eof) <?> "end of line"
+
+eol :: (Stream s m t, Show t) => ParsecT s u m()
+{-# INLINABLE eol #-}
+eol                 = (void newline <|> eof) <?> "end of line"
+
 -- | @notFollowedBy p@ only succeeds when parser @p@ fails. This parser
 -- does not consume any input. This parser can be used to implement the
 -- \'longest match\' rule. For example, when recognizing keywords (for
@@ -321,7 +330,7 @@ parserTrace s = pt <|> return ()
     where
         pt = try $ do
            x <- try $ many1 anyToken
-           trace (s++": " ++ show x) $ try $ eof
+           trace (s++": " ++ show x) $ try eof
            fail (show x)
 
 -- | @parserTraced label p@ is an impure function, implemented with "Debug.Trace" that
