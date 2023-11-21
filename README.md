@@ -1,4 +1,4 @@
-Parsec [![Build Status](https://travis-ci.org/haskell/parsec.svg?branch=master)](https://travis-ci.org/haskell/parsec)
+Parsec [![Build Status](https://github.com/haskell/parsec/workflows/Haskell-CI/badge.svg)](https://github.com/haskell/parsec/actions)
 ======
 
 **Please refer to the [package description on Hackage](https://hackage.haskell.org/package/parsec#description) for more information.**
