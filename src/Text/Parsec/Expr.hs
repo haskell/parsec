@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE Safe #-}
 
@@ -46,9 +45,7 @@ data Assoc                = AssocNone
 data Operator s u m a   = Infix (ParsecT s u m (a -> a -> a)) Assoc
                         | Prefix (ParsecT s u m (a -> a))
                         | Postfix (ParsecT s u m (a -> a))
-#if MIN_VERSION_base(4,7,0)
     deriving ( Typeable )
-#endif
 
 -- | An @OperatorTable s u m a@ is a list of @Operator s u m a@
 -- lists. The list is ordered in descending
