@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP, FlexibleContexts, Safe #-}
+{-# LANGUAGE FlexibleContexts, Safe #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -17,9 +17,6 @@
 module Text.Parsec.Char where
 
 import Data.Char (isSpace, isUpper, isLower, isAlphaNum, isAlpha, isDigit, isHexDigit, isOctDigit)
-#if !(MIN_VERSION_base(4,8,0))
-import Control.Applicative ((*>))
-#endif
 
 import Text.Parsec.Pos
 import Text.Parsec.Prim

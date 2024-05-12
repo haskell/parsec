@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE ExistentialQuantification #-}
 {-# LANGUAGE FlexibleContexts #-}
@@ -42,13 +41,7 @@ module Text.Parsec.Perm
     ) where
 
 import Control.Monad.Identity ( Identity )
-#if MIN_VERSION_base(4,7,0)
 import Data.Typeable ( Typeable )
-#else
--- For GHC 7.6
-import Data.Typeable ( Typeable3 )
-#endif
-
 import Text.Parsec
 
 infixl 1 <||>, <|?>
@@ -137,20 +130,12 @@ type PermParser tok st a = StreamPermParser String st a
 -- using 'permute'.
 
 data StreamPermParser s st a = Perm (Maybe a) [StreamBranch s st a]
-#if MIN_VERSION_base(4,7,0)
     deriving ( Typeable )
-#else
-deriving instance Typeable3 StreamPermParser
-#endif
 
 -- type Branch st a = StreamBranch String st a
 
 data StreamBranch s st a = forall b. Branch (StreamPermParser s st (b -> a)) (Parsec s st b)
-#if MIN_VERSION_base(4,7,0)
     deriving ( Typeable )
-#else
-deriving instance Typeable3 StreamBranch
-#endif
 
 -- | The parser @permute perm@ parses a permutation of parser described
 -- by @perm@. For example, suppose we want to parse a permutation of:

@@ -1,3 +1,7 @@
+### 3.1.18.0
+
+- Drop support for GHCs prior 8.6.5
+
 ### 3.1.17.0
 
 - Move `many1 :: ParsecT s u m a -> ParsecT s u m [a]` to `Text.Parsec.Prim`.
