@@ -247,6 +247,7 @@ instance Functor (Reply s u) where
 
 instance Functor (ParsecT s u m) where
     fmap f p = parsecMap f p
+    x <$ (ParsecT p) = ParsecT (\s cok cerr eok eerr -> p s (const (cok x)) cerr (const (eok x)) eerr)
 
 parsecMap :: (a -> b) -> ParsecT s u m a -> ParsecT s u m b
 parsecMap f p
