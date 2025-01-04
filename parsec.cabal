@@ -1,157 +1,179 @@
-cabal-version:  1.12
-name:           parsec
-version:        3.1.18.0
+cabal-version:      1.12
+name:               parsec
+version:            3.1.18.1
+synopsis:           Monadic parser combinators
+description:
+  Parsec is designed from scratch as an industrial-strength parser
+  library.  It is simple, safe, well documented (on the package
+  homepage), has extensive libraries, good error messages,
+  and is fast.  It is defined as a monad transformer that can be
+  stacked on arbitrary monads, and it is also parametric in the
+  input stream type.
+  .
+  The main entry point is the "Text.Parsec" module which provides
+  defaults for parsing 'Char'acter data.
+  .
+  The "Text.ParserCombinators.Parsec" module hierarchy contains
+  the legacy @parsec-2@ API and may be removed at some point in
+  the future.
 
-synopsis:       Monadic parser combinators
-description:    Parsec is designed from scratch as an industrial-strength parser
-                library.  It is simple, safe, well documented (on the package
-                homepage), has extensive libraries, good error messages,
-                and is fast.  It is defined as a monad transformer that can be
-                stacked on arbitrary monads, and it is also parametric in the
-                input stream type.
-                .
-                The main entry point is the "Text.Parsec" module which provides
-                defaults for parsing 'Char'acter data.
-                .
-                The "Text.ParserCombinators.Parsec" module hierarchy contains
-                the legacy @parsec-2@ API and may be removed at some point in
-                the future.
+license:            BSD2
+license-file:       LICENSE
+author:
+  Daan Leijen <daan@microsoft.com>, Paolo Martini <paolo@nemail.it>, Antoine Latter <aslatter@gmail.com>
 
-license:        BSD2
-license-file:   LICENSE
-author:         Daan Leijen <daan@microsoft.com>, Paolo Martini <paolo@nemail.it>, Antoine Latter <aslatter@gmail.com>
-maintainer:     Oleg Grenrus <oleg.grenrus@iki.fi>, Herbert Valerio Riedel <hvr@gnu.org>
-homepage:       https://github.com/haskell/parsec
-bug-reports:    https://github.com/haskell/parsec/issues
-category:       Parsing
+maintainer:
+  Oleg Grenrus <oleg.grenrus@iki.fi>, Herbert Valerio Riedel <hvr@gnu.org>
 
-build-type:     Simple
-tested-with:    GHC ==9.10.1 || ==9.8.2 || ==9.6.4 || ==9.4.8 || ==9.2.8 || ==9.0.2 || ==8.10.7 || ==8.8.4 || ==8.6.5
+homepage:           https://github.com/haskell/parsec
+bug-reports:        https://github.com/haskell/parsec/issues
+category:           Parsing
+build-type:         Simple
+tested-with:
+  GHC ==8.6.5
+   || ==8.8.4
+   || ==8.10.7
+   || ==9.0.2
+   || ==9.2.8
+   || ==9.4.8
+   || ==9.6.4
+   || ==9.8.2
+   || ==9.10.1
+   || ==9.12.1
 
-extra-source-files: ChangeLog.md, README.md
+extra-source-files:
+  ChangeLog.md
+  README.md
 
 source-repository head
-    type: git
-    location: https://github.com/haskell/parsec
+  type:     git
+  location: https://github.com/haskell/parsec
 
 library
-    hs-source-dirs: src
-    exposed-modules:
-        Text.Parsec
-        Text.Parsec.String
-        Text.Parsec.ByteString
-        Text.Parsec.ByteString.Lazy
-        Text.Parsec.Text
-        Text.Parsec.Text.Lazy
-        Text.Parsec.Pos
-        Text.Parsec.Error
-        Text.Parsec.Prim
-        Text.Parsec.Char
-        Text.Parsec.Combinator
-        Text.Parsec.Token
-        Text.Parsec.Expr
-        Text.Parsec.Language
-        Text.Parsec.Perm
-        Text.ParserCombinators.Parsec
-        Text.ParserCombinators.Parsec.Char
-        Text.ParserCombinators.Parsec.Combinator
-        Text.ParserCombinators.Parsec.Error
-        Text.ParserCombinators.Parsec.Expr
-        Text.ParserCombinators.Parsec.Language
-        Text.ParserCombinators.Parsec.Perm
-        Text.ParserCombinators.Parsec.Pos
-        Text.ParserCombinators.Parsec.Prim
-        Text.ParserCombinators.Parsec.Token
+  hs-source-dirs:   src
+  exposed-modules:
+    Text.Parsec
+    Text.Parsec.ByteString
+    Text.Parsec.ByteString.Lazy
+    Text.Parsec.Char
+    Text.Parsec.Combinator
+    Text.Parsec.Error
+    Text.Parsec.Expr
+    Text.Parsec.Language
+    Text.Parsec.Perm
+    Text.Parsec.Pos
+    Text.Parsec.Prim
+    Text.Parsec.String
+    Text.Parsec.Text
+    Text.Parsec.Text.Lazy
+    Text.Parsec.Token
+    Text.ParserCombinators.Parsec
+    Text.ParserCombinators.Parsec.Char
+    Text.ParserCombinators.Parsec.Combinator
+    Text.ParserCombinators.Parsec.Error
+    Text.ParserCombinators.Parsec.Expr
+    Text.ParserCombinators.Parsec.Language
+    Text.ParserCombinators.Parsec.Perm
+    Text.ParserCombinators.Parsec.Pos
+    Text.ParserCombinators.Parsec.Prim
+    Text.ParserCombinators.Parsec.Token
 
-    build-depends:
-        base       >= 4.12.0.0 && < 4.21,
-        mtl        >= 2.2.2    && < 2.4,
-        bytestring >= 0.10.8.2 && < 0.13,
-        text      (>= 1.2.3.0  && < 1.3)
-               || (>= 2.0 && < 2.2)
+  build-depends:
+      base        >=4.12.0.0 && <4.22
+    , bytestring  >=0.10.8.2 && <0.13
+    , mtl         >=2.2.2    && <2.4
+    , text        >=1.2.3.0  && <1.3  || >=2.0 && <2.2
 
-    default-language: Haskell2010
-    other-extensions:
-        CPP
-        DeriveDataTypeable
-        ExistentialQuantification
-        FlexibleContexts
-        FlexibleInstances
-        FunctionalDependencies
-        MultiParamTypeClasses
-        PolymorphicComponents
-        StandaloneDeriving
-        Safe
-        Trustworthy
-        UndecidableInstances
+  default-language: Haskell2010
+  other-extensions:
+    CPP
+    DeriveDataTypeable
+    ExistentialQuantification
+    FlexibleContexts
+    FlexibleInstances
+    FunctionalDependencies
+    MultiParamTypeClasses
+    PolymorphicComponents
+    Safe
+    StandaloneDeriving
+    Trustworthy
+    UndecidableInstances
 
-    ghc-options: -Wall
-    if impl(ghc >= 8.0)
-        ghc-options: -Wcompat -Wnoncanonical-monad-instances -Wno-trustworthy-safe
-        if impl(ghc < 8.8)
-          ghc-options: -Wnoncanonical-monadfail-instances
-    else
-        -- provide/emulate `Control.Monad.Fail` and `Semigroup` API for pre-GHC8
-        build-depends: fail == 4.9.*, semigroups >= 0.18 && < 0.21
+  ghc-options:      -Wall
+  ghc-options:
+    -Wcompat -Wnoncanonical-monad-instances -Wno-trustworthy-safe
 
-        if impl(ghc >= 7.10)
-            ghc-options: -fno-warn-trustworthy-safe
+  if impl(ghc <8.8)
+    ghc-options: -Wnoncanonical-monadfail-instances
 
-    -- these flags may abort compilation with GHC-8.10
-    -- https://gitlab.haskell.org/ghc/ghc/-/merge_requests/3295
-    -- https://gitlab.haskell.org/ghc/ghc/-/issues/22728
-    -- if impl(ghc >= 9.0)
-    --    -- ghc-options: -Winferred-safe-imports -Wmissing-safe-haskell-mode
+-- these flags may abort compilation with GHC-8.10
+-- https://gitlab.haskell.org/ghc/ghc/-/merge_requests/3295
+-- https://gitlab.haskell.org/ghc/ghc/-/issues/22728
+-- if impl(ghc >= 9.0)
+--    -- ghc-options: -Winferred-safe-imports -Wmissing-safe-haskell-mode
 
 test-suite parsec-tests
-    type: exitcode-stdio-1.0
+  type:             exitcode-stdio-1.0
+  hs-source-dirs:   test
+  main-is:          Main.hs
+  other-modules:
+    Bugs
+    Bugs.Bug2
+    Bugs.Bug35
+    Bugs.Bug6
+    Bugs.Bug9
+    Features
+    Features.Feature150
+    Features.Feature80
+    Util
 
-    hs-source-dirs: test
-    main-is: Main.hs
-    other-modules:
-        Bugs
-        Bugs.Bug2
-        Bugs.Bug6
-        Bugs.Bug9
-        Bugs.Bug35
-        Features
-        Features.Feature80
-        Features.Feature150
-        Util
+  build-depends:
+      base
+    , mtl
+    , parsec
+    , tasty        >=1.4  && <1.6
+    , tasty-hunit  >=0.10 && <0.11
 
-    build-depends:
-        base,
-        mtl,
-        parsec,
-        -- dependencies whose version bounds are not inherited via lib:parsec
-        tasty >= 1.4 && < 1.6,
-        tasty-hunit >= 0.10 && < 0.11
+  -- dependencies whose version bounds are not inherited via lib:parsec
+  default-language: Haskell2010
+  ghc-options:      -Wall
 
-    default-language: Haskell2010
+  if impl(ghc >=8.0)
+    ghc-options:
+      -Wcompat -Wnoncanonical-monad-instances
+      -Wnoncanonical-monadfail-instances
 
-    ghc-options: -Wall
-    if impl(ghc >= 8.0)
-        ghc-options: -Wcompat -Wnoncanonical-monad-instances -Wnoncanonical-monadfail-instances
-    else
-        build-depends: semigroups
+  else
+    build-depends: semigroups
 
 test-suite parsec-issue127
-    default-language: Haskell2010
-    type: exitcode-stdio-1.0
-    main-is: issue127.hs
-    hs-source-dirs: test
-    build-depends: base, parsec
+  default-language: Haskell2010
+  type:             exitcode-stdio-1.0
+  main-is:          issue127.hs
+  hs-source-dirs:   test
+  build-depends:
+      base
+    , parsec
 
 test-suite parsec-issue171
-    default-language: Haskell2010
-    type: exitcode-stdio-1.0
-    main-is: issue171.hs
-    hs-source-dirs: test
-    build-depends: base, tasty, tasty-hunit, deepseq, parsec
+  default-language: Haskell2010
+  type:             exitcode-stdio-1.0
+  main-is:          issue171.hs
+  hs-source-dirs:   test
+  build-depends:
+      base
+    , deepseq
+    , parsec
+    , tasty
+    , tasty-hunit
 
 test-suite parsec-issue175
-    default-language: Haskell2010
-    type: exitcode-stdio-1.0
-    main-is: issue175.hs
-    hs-source-dirs: test
-    build-depends: base, tasty, tasty-hunit, parsec
+  default-language: Haskell2010
+  type:             exitcode-stdio-1.0
+  main-is:          issue175.hs
+  hs-source-dirs:   test
+  build-depends:
+      base
+    , parsec
+    , tasty
+    , tasty-hunit
