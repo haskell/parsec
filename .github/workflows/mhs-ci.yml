@@ -1,0 +1,58 @@
+name: ci-mhs
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build-mhs-mtl:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: checkout mhs repo
+      uses: actions/checkout@v4
+      with:
+        repository: augustss/MicroHs
+        ref: stable-6
+        path: mhs
+    - name: make and install mhs
+      run: |
+        cd mhs
+        make minstall
+
+    - name: checkout transformers repo
+      uses: actions/checkout@v4
+      with:
+        repository: augustss/transformers
+        path: transformers
+    - name: compile and install transformers package
+      run: |
+        PATH="$HOME/.mcabal/bin:$PATH"
+        cd transformers
+        mcabal install
+
+    - name: checkout mtl repo
+      uses: actions/checkout@v4
+      with:
+        path: mtl
+    - name: compile and install mtl package
+      run: |
+        PATH="$HOME/.mcabal/bin:$PATH"
+        cd mtl
+        mcabal install
+
+    - name: checkout parsec repo
+      uses: actions/checkout@v4
+      with:
+        path: parsec
+    - name: compile and install parsec package
+      run: |
+        PATH="$HOME/.mcabal/bin:$PATH"
+        cd parsec
+        mcabal install
+
+    - name: cleanup
+      run: |
+        rm -rf $HOME/.mcabal
