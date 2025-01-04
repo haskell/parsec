@@ -36,6 +36,7 @@ jobs:
     - name: checkout mtl repo
       uses: actions/checkout@v4
       with:
+        repository: augustss/mtl
         path: mtl
     - name: compile and install mtl package
       run: |
