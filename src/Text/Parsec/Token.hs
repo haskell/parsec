@@ -1,5 +1,6 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE PolymorphicComponents #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE Safe #-}
 
 -----------------------------------------------------------------------------
@@ -348,7 +349,7 @@ data GenTokenParser s u m
 -- >  reserved    = P.reserved lexer
 -- >  ...
 
-makeTokenParser :: (Stream s m Char)
+makeTokenParser :: forall s m u . (Stream s m Char)
                 => GenLanguageDef s u m -> GenTokenParser s u m
 {-# INLINABLE makeTokenParser #-}
 makeTokenParser languageDef
@@ -390,6 +391,8 @@ makeTokenParser languageDef
     -----------------------------------------------------------
     -- Bracketing
     -----------------------------------------------------------
+    parens, braces, angles, brackets
+                   :: forall a. ParsecT s u m a -> ParsecT s u m a
     parens p        = between (symbol "(") (symbol ")") p
     braces p        = between (symbol "{") (symbol "}") p
     angles p        = between (symbol "<") (symbol ">") p
@@ -400,6 +403,8 @@ makeTokenParser languageDef
     dot             = symbol "."
     colon           = symbol ":"
 
+    commaSep, semiSep, commaSep1, semiSep1
+                   :: forall a. ParsecT s u m a -> ParsecT s u m [a]
     commaSep p      = sepBy p comma
     semiSep p       = sepBy p semi
 
@@ -681,6 +686,7 @@ makeTokenParser languageDef
     symbol name
         = lexeme (string name)
 
+    lexeme :: forall a. ParsecT s u m a -> ParsecT s u m a
     lexeme p
         = do{ x <- p; whiteSpace; return x  }
 

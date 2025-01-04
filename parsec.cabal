@@ -67,8 +67,7 @@ library
         base       >= 4.12.0.0 && < 4.21,
         mtl        >= 2.2.2    && < 2.4,
         bytestring >= 0.10.8.2 && < 0.13,
-        text      (>= 1.2.3.0  && < 1.3)
-               || (>= 2.0 && < 2.2)
+        text      (>= 1.2.3.0  && < 1.3) || (>= 2.0 && < 2.2)
 
     default-language: Haskell2010
     other-extensions:
@@ -86,7 +85,7 @@ library
         UndecidableInstances
 
     ghc-options: -Wall
-    if impl(ghc >= 8.0)
+    if impl(ghc >= 8.0) || impl(mhs)
         ghc-options: -Wcompat -Wnoncanonical-monad-instances -Wno-trustworthy-safe
         if impl(ghc < 8.8)
           ghc-options: -Wnoncanonical-monadfail-instances
