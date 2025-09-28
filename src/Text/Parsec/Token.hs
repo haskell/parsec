@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE MonoLocalBinds #-}    -- MicroHs always has MonoLocalBinds, this helps GHC catch those problems
 {-# LANGUAGE PolymorphicComponents #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE Safe #-}
