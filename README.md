@@ -53,7 +53,7 @@ any modern installation of Haskell, such as
 
 First install Parsec.
 
-    cabal install parsec
+    cabal install --lib parsec
 
 Below we show how a very simple parser that tests matching parentheses
 was made from GHCI (the interactive GHC environment), which we started
