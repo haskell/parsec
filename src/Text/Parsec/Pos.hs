@@ -37,8 +37,8 @@ type Column     = Int
 
 -- | The abstract data type @SourcePos@ represents source positions. It
 -- contains the name of the source (i.e. file name), a line number and
--- a column number. @SourcePos@ is an instance of the 'Show', 'Eq' and
--- 'Ord' class.
+-- a column number. The upper left is (1, 1). @SourcePos@ is an
+-- instance of the 'Show', 'Eq' and 'Ord' class.
 
 data SourcePos  = SourcePos SourceName !Line !Column
     deriving ( Eq, Ord, Data, Typeable)
