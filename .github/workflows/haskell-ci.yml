@@ -8,9 +8,9 @@
 #
 # For more information, see https://github.com/haskell-CI/haskell-ci
 #
-# version: 0.19.20250605
+# version: 0.19.20260331
 #
-# REGENDATA ("0.19.20250605",["github","cabal.project"])
+# REGENDATA ("0.19.20260331",["github","cabal.project"])
 #
 name: Haskell-CI
 on:
@@ -20,6 +20,11 @@ on:
   pull_request:
     branches:
       - master
+  merge_group:
+    branches:
+      - master
+  workflow_dispatch:
+    {}
 jobs:
   linux:
     name: Haskell-CI - Linux - ${{ matrix.compiler }}
@@ -32,14 +37,19 @@ jobs:
     strategy:
       matrix:
         include:
-          - compiler: ghc-9.12.2
+          - compiler: ghc-9.14.1
             compilerKind: ghc
-            compilerVersion: 9.12.2
+            compilerVersion: 9.14.1
             setup-method: ghcup
             allow-failure: false
-          - compiler: ghc-9.10.2
+          - compiler: ghc-9.12.4
             compilerKind: ghc
-            compilerVersion: 9.10.2
+            compilerVersion: 9.12.4
+            setup-method: ghcup
+            allow-failure: false
+          - compiler: ghc-9.10.3
+            compilerKind: ghc
+            compilerVersion: 9.10.3
             setup-method: ghcup
             allow-failure: false
           - compiler: ghc-9.8.4
@@ -95,8 +105,8 @@ jobs:
           chmod a+x "$HOME/.ghcup/bin/ghcup"
       - name: Install cabal-install
         run: |
-          "$HOME/.ghcup/bin/ghcup" install cabal 3.14.2.0 || (cat "$HOME"/.ghcup/logs/*.* && false)
-          echo "CABAL=$HOME/.ghcup/bin/cabal-3.14.2.0 -vnormal+nowrap" >> "$GITHUB_ENV"
+          "$HOME/.ghcup/bin/ghcup" install cabal 3.16.0.0 || (cat "$HOME"/.ghcup/logs/*.* && false)
+          echo "CABAL=$HOME/.ghcup/bin/cabal-3.16.0.0 -vnormal+nowrap" >> "$GITHUB_ENV"
       - name: Install GHC (GHCup)
         if: matrix.setup-method == 'ghcup'
         run: |
@@ -172,7 +182,7 @@ jobs:
           chmod a+x $HOME/.cabal/bin/cabal-plan
           cabal-plan --version
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: source
       - name: initial cabal.project for sdist
@@ -197,7 +207,11 @@ jobs:
           touch cabal.project.local
           echo "packages: ${PKGDIR_parsec}" >> cabal.project
           echo "package parsec" >> cabal.project
-          echo "    ghc-options: -Werror=missing-methods" >> cabal.project
+          echo "    ghc-options: -Werror=missing-methods -Werror=missing-fields" >> cabal.project
+          if [ $((HCNUMVER >= 90400)) -ne 0 ] ; then echo "package parsec" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 90400)) -ne 0 ] ; then echo "    ghc-options: -Werror=unused-packages" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 90000)) -ne 0 ] ; then echo "package parsec" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 90000)) -ne 0 ] ; then echo "    ghc-options: -Werror=incomplete-patterns -Werror=incomplete-uni-patterns" >> cabal.project ; fi
           cat >> cabal.project <<EOF
           EOF
           $HCPKG list --simple-output --names-only | perl -ne 'for (split /\s+/) { print "constraints: any.$_ installed\n" unless /^(parsec)$/; }' >> cabal.project.local
