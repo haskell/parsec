@@ -225,9 +225,7 @@ instance Semigroup.Semigroup a => Semigroup.Semigroup (ParsecT s u m a) where
 -- the 'Semigroup' instance.
 --
 -- @since 3.1.12
-instance ( Monoid.Monoid a
-         , Semigroup.Semigroup (ParsecT s u m a)
-         ) => Monoid.Monoid (ParsecT s u m a) where
+instance Monoid.Monoid a => Monoid.Monoid (ParsecT s u m a) where
     -- | A parser that always succeeds, consumes no input, and
     --  returns the underlying 'Monoid''s 'mempty' value
     mempty = Applicative.pure Monoid.mempty
